@@ -1,0 +1,98 @@
+.steps{
+  margin: 100px auto 20px auto;
+}
+#back_btn, #submit_btn{
+  display: none;
+}
+
+.step{
+  display: none;
+  animation: stepSlide 1s ease-in;
+}
+.step:first-child {
+  display: block;
+
+}
+
+@keyframes stepSlide {
+  0%{
+    transform: skewX(53deg) translateX(-500px);
+    opacity: 0;
+  }
+  60%{
+    transform: translateX(0px);
+  }
+  62%{
+    transform: skewX(0deg) translateX(30px);
+  }
+  75%{
+    transform: skew(0deg) translate(0);
+  }
+  90%{
+    transform: skew(-5deg);
+    opacity: 1;
+  }
+  100%{
+    transform: skewX(0deg);
+  }
+}
+
+.progressbar{
+  counter-reset: step;
+  float: center;
+  margin-top: 3rem;
+}
+.progressbar ul li{
+  list-style-type: none;
+  float: left;
+  width: 15%;
+  position: relative;
+  text-align: center;
+  color: #ddd;
+}
+.progressbar li::before{
+  content: counter(step);
+  counter-increment: step;
+  width: 45px;
+  height: 45px;
+  line-height: 40px;
+  border: 1px solid #ccc;
+  display: block;
+  text-align: center;
+  margin: 0 auto 10px auto;
+  border-radius: 50%;
+  background-color: #fff;
+}
+.progressbar li::after{
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 5px;
+  background-color: #ccc;
+  top: 20px;
+  left: -50%;
+  z-index: -1;
+}
+.progressbar li:first-child::after{
+  content: none;
+}
+.progressbar li.done{
+  color: black;
+}
+.progressbar li.done::before{
+  border-color: black;
+  background-color: black;
+  color: white;
+}
+.progressbar li.done + li::after{
+  background-color: black;
+}
+
+.progressbar li.active{
+  color: #4682b4;
+}
+.progressbar li.active::before{
+  border-color: #1888f1;
+  background-color: #1888f1;
+  color: white;
+}
