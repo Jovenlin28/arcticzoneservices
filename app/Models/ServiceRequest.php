@@ -11,7 +11,9 @@ class ServiceRequest extends Model
     protected $table = 'service_requests';
 
     protected $fillable = [
-        'client_id', 'service_type_id', 'location_id', 'property_id', 'timeslot_id', 'service_address', 'problem_desc'
+        'client_id', 'service_type_id', 'location_id', 
+        'property_id', 'timeslot_id', 'service_address', 
+        'near_landmark', 'special_instruction', 'status'
     ];
 
     public function appliances() {

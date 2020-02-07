@@ -706,7 +706,4 @@
 </main>
 
 
-
-
-
 @endsection

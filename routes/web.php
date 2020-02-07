@@ -21,7 +21,8 @@ Route::prefix('/')->namespace('Home')->group(function () {
     Route::get('/pricing', 'PricingController@index');
     Route::get('/unverified-email', 'EmailVerificationController@index');
     Route::post('/verify-code', 'EmailVerificationController@verify_code');
-    Route::get('/service-request', 'ServiceRequestController@index');
+    Route::get('/service-request', 'ServiceRequestController@index')->middleware('auth');
+    Route::post('/service-request/create', 'ServiceRequestController@create');
     Route::get('/voucher', 'VoucherController@index');
 });
 

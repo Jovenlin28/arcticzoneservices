@@ -14,8 +14,7 @@ class ClientDashboardController extends Controller
     public function index() 
     {
 
-        $user_id = Auth::user()->id;
-
+        $user_client_id = Auth::user()->client->id;
 
         $client = UserClient::with(
             'service_requests.location',
@@ -24,7 +23,7 @@ class ClientDashboardController extends Controller
             'service_requests.timeslot',
             'service_requests.appliances.brand',
             'service_requests.appliances.unit'
-        )->find($user_id)->toArray();
+        )->find($user_client_id)->toArray();
 
         $client = $this->groupByRequestStatus($client);
 

@@ -162,6 +162,16 @@ div.upload>input#avatar,
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.0), 0 2px 2px 0 rgba(0, 0, 0, 0.1);
 }
 
+.card>button.remove {
+    opacity: 30%;
+}
+
+.card>button.remove>span {
+    padding: 0.6rem 0.6rem 0.6rem 0.6rem;
+    color: white;
+    font-size: 8px;
+}
+
 .message {}
 
 .footer {
@@ -174,6 +184,16 @@ div.upload>input#avatar,
 
 #not-match-password {
     display: none;
+}
+
+button.timeslot:active {
+    color: #fff;
+    background-color: #0062cc;
+    border-color: #005cbf;
+}
+
+button.timeslot>label {
+    width: 100%;
 }
 
 
