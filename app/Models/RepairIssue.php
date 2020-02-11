@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
@@ -8,7 +8,7 @@ use DB;
 class RepairIssue extends Model
 {
     // Table Name
-    protected $table = 'repair_issues';
+    protected $table = 'troubles';
 
     protected $fillable = ['name'];
 

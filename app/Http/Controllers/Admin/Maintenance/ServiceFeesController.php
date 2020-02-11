@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin\Maintenance;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Appliance;
+use App\Models\ServiceFee;
+use App\Models\ServiceType;
 use Illuminate\Support\Facades\Validator;
 
 class ServiceFeesController extends Controller
@@ -18,8 +21,18 @@ class ServiceFeesController extends Controller
      */
     public function index()
     {
+        $service_fees = ServiceFee::with([
+            'appliance', 'service_type'
+        ])->get();
+        
+        $appliances = Appliance::all();
+        $service_types = ServiceType::all();
 
-        return view('admin.maintenance.service_fee');
+        return view('admin.maintenance.service_fee')->with([
+            'service_fees' => $service_fees,
+            'appliances' => $appliances,
+            'service_types' => $service_types
+        ]);
     }
 
     /**

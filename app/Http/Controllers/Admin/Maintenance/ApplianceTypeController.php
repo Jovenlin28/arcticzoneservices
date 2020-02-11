@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Maintenance;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Appliance;
 use Illuminate\Support\Facades\Validator;
 
 class ApplianceTypeController extends Controller
@@ -18,8 +19,10 @@ class ApplianceTypeController extends Controller
      */
     public function index()
     {
-
-        return view('admin.maintenance.appliance_type');
+        $appliances = Appliance::all();
+        return view('admin.maintenance.appliance_type')->with([
+            'appliances' => $appliances
+        ]);
     }
 
     /**

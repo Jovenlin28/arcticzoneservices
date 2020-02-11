@@ -12,6 +12,7 @@ use App\Models\ServiceRequest;
 use App\Models\ServiceTimeslot;
 use App\Models\ServiceType;
 use App\Models\UnitType;
+use Carbon\Carbon;
 
 class ServiceRequestController extends Controller
 {
@@ -25,6 +26,10 @@ class ServiceRequestController extends Controller
         $units = UnitType::all();
         $appliances = Appliance::all();
         $timeslots = ServiceTimeslot::all();
+
+        // echo "<pre>";
+        // print_r($service_types->service_fees->toArray());
+        
         return view('home.service-request')->with([
             'locations' => $locations,
             'property_types' => $property_types,
@@ -51,8 +56,8 @@ class ServiceRequestController extends Controller
             'service_address' => $input['service_address'],
             'status' => 'new',
             'near_landmark' => $input['near_landmark'],
-            'special_instruction' => $input['special_instruction']
-
+            'special_instruction' => $input['special_instruction'],
+            'service_date' => date('Y-m-d', strtotime($input['service_date']))
         ]);
 
         $unit_details = [];

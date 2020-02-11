@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Maintenance;
 
-use App\PaymentMode;
+use App\Models\PaymentMode;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -23,9 +23,9 @@ class PaymentModeController extends Controller
      */
     public function index()
     {
-        $payment_mode = PaymentMode::all();
+        $payment_modes = PaymentMode::all();
 
-        return view('admin.maintenance.payment')->with('payment_mode', $payment_mode);
+        return view('admin.maintenance.payment')->with('payment_modes', $payment_modes);
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Maintenance;
 
-use App\Location;
+use App\Models\Location;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;

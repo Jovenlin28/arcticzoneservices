@@ -13,7 +13,8 @@ class ServiceRequest extends Model
     protected $fillable = [
         'client_id', 'service_type_id', 'location_id', 
         'property_id', 'timeslot_id', 'service_address', 
-        'near_landmark', 'special_instruction', 'status'
+        'near_landmark', 'special_instruction', 'status',
+        'service_date'
     ];
 
     public function appliances() {

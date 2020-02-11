@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Maintenance;
 
-use App\UnitType;
+use App\Models\UnitType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -49,22 +49,16 @@ class UnitTypeController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|unique:units,name,',
             'fee' => 'required|string:units,fee'
-            
-            
         ]);
 
         if ($validator->fails()) {
             return response()->json(array('errors' => $validator->getMessageBag()->toarray()));
         } else {
             try {
-
-
                 $unitsS = UnitType::create([
                     'name' => $request['name'],
                     'fee' => $request['fee']
                 ]);
-
-           
                 return [
                     'type' => 'success',
                     'title' => 'Success',
@@ -72,7 +66,7 @@ class UnitTypeController extends Controller
                     'unitsS' => $unitsS
                 ];
             } catch (\Exception $e) {
-                return ['type' => 'error', 'title' => 'Error','message' => $e->getMessage()];
+                return ['type' => 'error', 'title' => 'Error', 'message' => $e->getMessage()];
             }
         }
     }
@@ -111,8 +105,8 @@ class UnitTypeController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'unit_name' => 'required|string|unique:units,name,'.$id.',id',
-            'unit_fee' => 'required|string:units,fee,'.$id.',id'
+            'unit_name' => 'required|string|unique:units,name,' . $id . ',id',
+            'unit_fee' => 'required|string:units,fee,' . $id . ',id'
         ]);
 
         if ($validator->fails()) {
@@ -124,9 +118,9 @@ class UnitTypeController extends Controller
                     'fee' => $request['unit_fee']
                 ]);
 
-                return ['type' => 'success', 'title' => 'Success message','message' => "Unit Type information updated successfully"];
+                return ['type' => 'success', 'title' => 'Success message', 'message' => "Unit Type information updated successfully"];
             } catch (\Exception $e) {
-                return ['type' => 'error', 'title' => 'Error message','message' => $e->getMessage()];
+                return ['type' => 'error', 'title' => 'Error message', 'message' => $e->getMessage()];
             }
         }
     }

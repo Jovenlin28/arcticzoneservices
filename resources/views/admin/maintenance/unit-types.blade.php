@@ -65,12 +65,14 @@
                     @csrf
                     <div class="form-group">
                         <label>Unit Name<span class="text-danger">*</span></label>
-                        <input type="text" name="name" id="name" placeholder="Enter unit name" class="form-control" required>
+                        <input type="text" name="name" id="name" placeholder="Enter unit name" class="form-control"
+                            required>
                         <p class="text-danger mt-1" id="unit_name_error"></p>
                     </div>
                     <div class="form-group">
                         <label>Unit Addt'l Fee<span class="text-danger">*</span></label>
-                        <input type="text" name="fee" id="fee" placeholder="Enter unit addt'l fee" class="form-control" required>
+                        <input type="text" name="fee" id="fee" placeholder="Enter unit addt'l fee" class="form-control"
+                            required>
                         <p class="text-danger mt-1" id="unit_fee_error"></p>
                     </div>
 
@@ -132,13 +134,14 @@
         // console.log(data);
     }
 
-    function updateRow(id, newVal) {
+    function updateRow(id, newName, newFee) {
         var table = $('#basic-datatable')[0];
 
         for (var i = 0; i < table.rows.length; i++) {
             if (table.rows[i].id == id) {
                 // children[1] = 'SERVICE NAME' column
-                table.rows[i].children[1].innerText = newVal;
+                table.rows[i].children[1].innerText = newName;
+                table.rows[i].children[2].innerText = newFee;
                 break;
             }
         }
@@ -217,7 +220,7 @@
                         ) // sweetalert rep.
 
                         // change value nung row..?
-                        updateRow(id, $('#unit_name', '#unit_fee').val())
+                        updateRow(id, $('#unit_name').val(), $('#unit_fee').val())
                     }
                 },
                 error: function(data){

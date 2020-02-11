@@ -12,12 +12,7 @@ class ServiceType extends Model
 
     protected $fillable = ['name'];
 
-    public function get_service_types($id)
-    {
-        return DB::select('SELECT * FROM service_types WHERE id = "'.$id.'"');
-    }
-
-    public function appliances() {
-        return $this->hasMany(Appliance::class, 'service_type_id');
+    public function service_fees() {
+        return $this->hasMany(ServiceFee::class, 'service_id');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Maintenance;
 
-use App\BankDetails;
+use App\Models\BankDetails;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;

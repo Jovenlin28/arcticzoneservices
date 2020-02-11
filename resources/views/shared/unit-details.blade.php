@@ -6,7 +6,8 @@
 				<label><b>Aircon Type</b></label>
 				<select name="appliance_id" class="form-control">
 					@foreach ($appliances as $appliance)
-					<option value="{{ $appliance->id }}">
+					<option data-fee="{{ $appliance->fee }}" 
+						value="{{ $appliance->id }}">
 						{{ $appliance->name }}
 					</option>
 					@endforeach

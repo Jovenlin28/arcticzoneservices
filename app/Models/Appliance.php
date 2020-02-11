@@ -6,19 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Appliance extends Model
 {
-    protected $fillable = ['name', 'fee', 'image'];
+    protected $fillable = ['name', 'image'];
 
-    public function type()
-    {
-        return $this->belongsTo(ServiceType::class, 'service_type_id');
-    }
-
-    public function brand() {
-        return $this->belongsTo(Brand::class);
-    }
-
-    public function unit() {
-        return $this->belongsTo(UnitType::class, 'unit_id');
+    public function service_fees() {
+        return $this->hasMany(ServiceFee::class, 'appliance_id');
     }
 
     public function serviceRequests() {

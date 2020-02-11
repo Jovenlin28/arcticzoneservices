@@ -19,7 +19,9 @@ class PricingController extends Controller
 
     public function index() 
     {
-        $service_types = $this->serviceType::all();
+        $service_types = ServiceType::with([
+            'service_fees.appliance'
+        ])->get();
         return view('home.pricing')->with('service_types', $service_types);
     }
     

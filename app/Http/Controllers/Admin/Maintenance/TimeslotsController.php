@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Maintenance;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\ServiceTimeslot;
 use Illuminate\Support\Facades\Validator;
 
 class TimeslotsController extends Controller
@@ -18,8 +19,8 @@ class TimeslotsController extends Controller
      */
     public function index()
     {
-
-        return view('admin.maintenance.timeslots');
+        $timeslots = ServiceTimeslot::all();
+        return view('admin.maintenance.timeslots')->with('timeslots', $timeslots);
     }
 
     /**

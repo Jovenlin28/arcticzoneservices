@@ -35,7 +35,7 @@
                     </thead>
 
                     <tbody>
-                        @foreach($payment_mode as $mode)
+                        @foreach($payment_modes as $mode)
                         <tr id="{{$mode->id}}">
                             <td>{{$mode->id}}</td>
                             <td>{{$mode->name}}</td>

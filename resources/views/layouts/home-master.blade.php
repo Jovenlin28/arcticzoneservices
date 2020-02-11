@@ -27,11 +27,12 @@
     <link rel="stylesheet" href="{{ asset('home/vendor/owl-carousel/css/owl.carousel.min.css')}}">
     <link rel="stylesheet" href="{{ asset('home/vendor/owl-carousel/css/owl.theme.default.min.css')}}">
 
-
+    <link rel="stylesheet" href="{{ asset('home/css/jquery-ui.css')}}">
     {{-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> --}}
     <link rel="stylesheet" href="/resources/demos/style.css">
 
     <script src="{{asset('home/js/jquery.3.4.1.js')}}"></script>
+    <script src="{{asset('home/js/jquery-ui.js')}}"></script>
     {{-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> --}}
 
  
@@ -102,14 +103,10 @@
     
     
         </main>
-
-         <!--  Jquery js file  -->
-        <script src="{{ asset('multiform/js/jquery3.3.1.js')}}"></script>
     
          <!--  Jquery js file  -->
         <script type="text/javascript" src="{{ asset('multiform/js/app.js')}}"></script>
 
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     
         <!--  Bootstrap js file  --->
         <script src="{{ asset('home/js/bootstrap.min.js')}}"></script>
