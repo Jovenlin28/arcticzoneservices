@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Appliance;
 use App\Models\Brand;
 use App\Models\Location;
+use App\Models\PaymentMode;
 use App\Models\PropertyType;
 use App\Models\ServiceRequest;
 use App\Models\ServiceTimeslot;
@@ -26,6 +27,7 @@ class ServiceRequestController extends Controller
         $units = UnitType::all();
         $appliances = Appliance::all();
         $timeslots = ServiceTimeslot::all();
+        $payment_modes = PaymentMode::all();
 
         // echo "<pre>";
         // print_r($service_types->service_fees->toArray());
@@ -37,7 +39,8 @@ class ServiceRequestController extends Controller
             'brands' => $brands,
             'units' => $units,
             'appliances' => $appliances,
-            'timeslots' => $timeslots
+            'timeslots' => $timeslots,
+            'payment_modes' => $payment_modes
         ]);
     }
     
@@ -57,6 +60,8 @@ class ServiceRequestController extends Controller
             'status' => 'new',
             'near_landmark' => $input['near_landmark'],
             'special_instruction' => $input['special_instruction'],
+            'payment_mode_id' => $input['payment_mode_id'],
+            'is_paid' => 0,
             'service_date' => date('Y-m-d', strtotime($input['service_date']))
         ]);
 

@@ -23,6 +23,8 @@
             <link href="{{ asset('assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />
             <link href="{{ asset('assets/css/app.min.css')}}" rel="stylesheet" type="text/css" />
 
+            <script src="{{asset('home/js/jquery.3.4.1.js')}}"></script>
+
         </head>
 
         <body class="left-side-menu-light">

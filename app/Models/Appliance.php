@@ -12,6 +12,14 @@ class Appliance extends Model
         return $this->hasMany(ServiceFee::class, 'appliance_id');
     }
 
+    public function brand() {
+        return $this->belongsTo(Brand::class, 'brand_id');
+    }
+
+    public function unit() {
+        return $this->belongsTo(UnitType::class, 'unit_id');
+    }
+
     public function serviceRequests() {
         return $this->belongsToMany(ServiceRequest::class);
     }

@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Client;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
 use App\Models\ServiceRequest;
+use App\Models\ServiceTimeslot;
+use App\Models\UnitType;
 use App\Models\UserClient;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,16 +24,32 @@ class ClientDashboardController extends Controller
             'service_requests.service_type',
             'service_requests.property',
             'service_requests.timeslot',
-            'service_requests.appliances.brand',
-            'service_requests.appliances.unit'
+            'service_requests.payment_mode',
+            'service_requests.appliances',
+            'service_requests.technicians'
         )->find($user_client_id)->toArray();
-
-        $client = $this->groupByRequestStatus($client);
 
         // echo "<pre>";
         // print_r($client);
+        // die();
 
-        return view('client.client_dashboard')->with('client', $client);
+        $timeslots = ServiceTimeslot::all();
+
+       
+        foreach($client['service_requests'] as &$service_request) {
+            foreach($service_request['appliances'] as &$appliance) {
+                $appliance['brand'] = Brand::find($appliance['pivot']['brand_id'])->toArray();
+                $appliance['unit'] = UnitType::find($appliance['pivot']['unit_id'])->toArray();
+            }
+        }
+
+        $client = $this->groupByRequestStatus($client);
+
+
+        return view('client.client_dashboard')->with([
+            'client' => $client,
+            'timeslots' => $timeslots
+        ]);
     }
 
     private function groupByRequestStatus($client) {

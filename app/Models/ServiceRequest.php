@@ -14,16 +14,32 @@ class ServiceRequest extends Model
         'client_id', 'service_type_id', 'location_id', 
         'property_id', 'timeslot_id', 'service_address', 
         'near_landmark', 'special_instruction', 'status',
-        'service_date'
+        'service_date', 'payment_mode_id', 'is_paid'
     ];
 
     public function appliances() {
-        return $this->belongsToMany(Appliance::class, 'service_request_appliances');
+        return $this->belongsToMany(Appliance::class, 'service_request_appliances')
+        ->withPivot('brand_id', 'unit_id', 'qty');
     }
 
+    public function technicians() {
+        return $this->belongsToMany(
+            UserTechnician::class, 'service_request_handles', 'service_request_id', 'tech_id'
+        );
+    }
+
+    public function workdone() {
+        return $this->belongsToMany(
+            Workdone::class, 'service_request_workdone'
+        );
+    }
 
     public function location() {
         return $this->belongsTo(Location::class);
+    }
+
+    public function payment_mode() {
+        return $this->belongsTo(PaymentMode::class, 'payment_mode_id');
     }
 
     public function service_type() {

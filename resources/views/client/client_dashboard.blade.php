@@ -86,140 +86,167 @@
 
 					<div class="tab-content mb-0">
 						@foreach ($client['service_requests_category'] as $category => $service_requests)
-							<div class="tab-pane {{ $category === 'new' ? 'active' : ''}}" id="{{$category}}-b2">
-								@foreach ($service_requests as $request)
-									<div class="row">
-										<div class="col-md-3">
-											<div class="card-box">
-												<h5 class="text-primary">{{ ucfirst($category) }} Requests</h5>
-												<hr>
-												<div class="row">
-													<div class="col-md-6">
-														SR00{{ $request['id'] }}
-													</div>
-													<div class="col-md-6">
-														{{ $request['service_date'] }}
-													</div>
-												</div>
+						<div class="tab-pane {{ $category === 'new' ? 'active' : ''}}" id="{{$category}}-b2">
+							@foreach ($service_requests as $request)
+							<div class="row">
+								<div class="col-md-3">
+									<div class="card-box">
+										<h5 class="text-primary">{{ ucfirst($category) }} Requests</h5>
+										<hr>
+										<div class="row">
+											<div class="col-md-6">
+												SR00{{ $request['id'] }}
 											</div>
-										</div>
-										<div class="col-md-9">
-											<div class="card-box">
-												<h5>Service Request Information</h5>
-												<hr>
-												@if ($category === 'new')
-													<p>Before we assign your service requested to our technician. Kindly pay first
-														using our given voucher and send us your receipt of payment <a href="" data-toggle="modal"
-															data-target="#myModal">here</a>. 
-													</p>
-												@endif
-												<p class="text-muted mt-4"><b>SERVICE DETAILS</b></p>
-												<div class="row">
-													<div class="col-md-3">
-														<p class="text-muted">Service ID</p>
-														<p>SR00{{ $request['id'] }}</p>
-													</div>
-													<div class="col-md-3">
-														<p class="text-muted">Status</p>
-														<p>{{ ucfirst($category)}} </p>
-													</div>
-													<div class="col-md-3">
-														<p class="text-muted">Submitted Date</p>
-														<p>	{{ $request['service_date'] }}</p>
-													</div>
-													<div class="col-md-3">
-														<p class="text-muted">Service Date</p>
-														<p> 
-															{{ $request['timeslot']['start'] }} - {{ $request['timeslot']['end'] }} 
-															<br> {{ $request['service_date'] }} 
-														</p>
-													</div>
-		
-												</div>
-		
-		
-												<div class="row mt-3">
-													<div class="col-md-3">
-														<p class="text-muted">Service Type</p>
-														<p>{{ $request['service_type']['name'] }}</p>
-													</div>
-													<div class="col-md-3">
-														<p class="text-muted">Property Type</p>
-														<p>{{ $request['property']['name'] }}</p>
-													</div>
-													<div class="col-md-3">
-														<p class="text-muted">Appliance Type</p>
-														<p>Split (1)</p>
-													</div>
-													<div class="col-md-3">
-														<p class="text-muted">Type and Brand</p>
-														Non-inverter / Samsung
-													</div>
-		
-												</div>
-		
-		
-												<div class="row mt-3">
-		
-													<div class="col-md-3">
-														<p class="text-muted">Service Location</p>
-														<p>{{ $request['location']['name'] }}</p>
-													</div>
-													<div class="col-md-3">
-														<p class="text-muted">Service Address</p>
-														<p> {{ $request['service_address'] }} </p>
-													</div>
-													<div class="col-md-3">
-														<p class="text-muted">Near Landmark</p>
-														<p>McDonalds</p>
-													</div>
-													<div class="col-md-3">
-														<p class="text-muted">Addt'l Instructions</p>
-														-
-													</div>
-		
-												</div>
-
-												@if ($category !== 'new')
-													<p class="text-muted">Assigned Technician</p>
-													<p>Mr. Jose P. Rizal <br> Mr. Juan D. Cruz</p>
-												@endif
-
-												<p class="text-muted mt-4"><b>PAYMENT DETAILS</b> </p>
-		
-												<div class="row">
-		
-													<div class="col-md-3">
-														<p class="text-muted">Mode of Payment</p>
-														<p>Full Payment</p>
-													</div>
-													<div class="col-md-3">
-														<p class="text-muted">Status</p>
-														<p>Not Paid</p>
-													</div>
-													<div class="col-md-3">
-														<p class="text-muted">Total Payment</p>
-														<p><a href="">See full details</a></p>
-													</div>
-													<div class="col-md-3">
-														<p class="text-muted">Date and Time Received</p>
-														<p>-</p>
-													</div>
-												</div>
-												@if ($category === 'pending')
-													<div class="mt-5">
-														<button type="button" style="width: 49%;" class="btn btn-primary waves-effect waves-light"
-															data-toggle="modal" data-target="#myReschedule">Reschedule Request</button>
-														<button type="button" style="width: 50%;" class="btn btn-danger waves-effect waves-light">Cancel
-															Request</button>
-													</div>
-													<br><br>
-												@endif
+											<div class="col-md-6">
+												{{ $request['service_date'] }}
 											</div>
 										</div>
 									</div>
-								@endforeach
+								</div>
+								<div class="col-md-9">
+									<div class="card-box">
+										<h5>Service Request Information</h5>
+										<hr>
+										@if ($category === 'new')
+										<p>Before we assign your service requested to our technician. Kindly pay first
+											using our given voucher and send us your receipt of payment <a href="" data-toggle="modal"
+												data-target="#myModal">here</a>.
+										</p>
+										@endif
+										<p class="text-muted mt-4"><b>SERVICE DETAILS</b></p>
+										<div class="row">
+											<div class="col-md-3">
+												<p class="text-muted">Service ID</p>
+												<p>SR00{{ $request['id'] }}</p>
+											</div>
+											<div class="col-md-3">
+												<p class="text-muted">Status</p>
+												<p>{{ ucfirst($category)}} </p>
+											</div>
+											<div class="col-md-3">
+												<p class="text-muted">Submitted Date</p>
+												<p> {{ $request['service_date'] }}</p>
+											</div>
+											<div class="col-md-3">
+												<p class="text-muted">Service Date</p>
+												<p>
+													{{ date('g:iA', strtotime($request['timeslot']['start'])) }} - 
+													{{ date('g:iA', strtotime($request['timeslot']['end'])) }}
+													<br> {{ date('M d, y', strtotime($request['service_date'])) }}
+												</p>
+											</div>
+
+										</div>
+
+
+										<div class="row mt-3">
+											<div class="col-md-3">
+												<p class="text-muted">Service Type</p>
+												<p>{{ $request['service_type']['name'] }}</p>
+											</div>
+											<div class="col-md-3">
+												<p class="text-muted">Property Type</p>
+												<p>{{ $request['property']['name'] }}</p>
+											</div>
+											<div class="col-md-6">
+												@foreach ($request['appliances'] as $i => $appliance)
+												<div class="row">
+													<div class="col-md-6">
+														@if ($i === 0)
+														<p class="text-muted">Appliance Type</p>
+														@endif
+														<p>{{ $appliance['name'] }} ({{ $appliance['pivot']['qty'] }}) </p>
+													</div>
+													<div class="col-md-6">
+														@if ($i === 0)
+														<p class="text-muted">Unit Type and Brand</p>
+														@endif
+														<p>{{ $appliance['unit']['name'] }} / {{ $appliance['brand']['name'] }}</p>
+													</div>
+												</div>
+												@endforeach
+
+											</div>
+
+
+										</div>
+
+
+										<div class="row mt-3">
+
+											<div class="col-md-3">
+												<p class="text-muted">Service Location</p>
+												<p>{{ $request['location']['name'] }}</p>
+											</div>
+											<div class="col-md-3">
+												<p class="text-muted">Service Address</p>
+												<p> {{ $request['service_address'] }} </p>
+											</div>
+											<div class="col-md-3">
+												<p class="text-muted">Near Landmark</p>
+												<p>{{ $request['near_landmark'] }}</p>
+											</div>
+											<div class="col-md-3">
+												<p class="text-muted">Addt'l Instructions</p>
+												<p>{{ $request['special_instruction'] }}</p>
+											</div>
+
+										</div>
+
+										@if ($category !== 'new')
+											<div class="row mt-3">
+												<div class="col-md-6">
+													<p class="text-muted">Assigned Technician</p>
+													<p>
+														@foreach ($request['technicians'] as $technician)
+																{{ $technician['email'] }} <br>
+														@endforeach
+													</p>
+												</div>
+												@if ($category === 'completed')
+													<div class="col-md-6">
+														<p class="text-muted">Date and Time Completed</p>
+														<p>{{ date('g:i A M d, Y', strtotime($request['completed_at'])) }}</p>
+													</div>
+												@endif
+											</div>
+										@endif
+
+										<p class="text-muted mt-4"><b>PAYMENT DETAILS</b> </p>
+
+										<div class="row">
+
+											<div class="col-md-3">
+												<p class="text-muted">Mode of Payment</p>
+												<p>{{ $request['payment_mode']['name']}}</p>
+											</div>
+											<div class="col-md-3">
+												<p class="text-muted">Status</p>
+												<p> {{ $request['is_paid'] ? 'Paid' : 'Not Paid' }}</p>
+											</div>
+											<div class="col-md-3">
+												<p class="text-muted">Total Payment</p>
+												<p><a href="">See full details</a></p>
+											</div>
+											<div class="col-md-3">
+												<p class="text-muted">Date and Time Received</p>
+												<p>-</p>
+											</div>
+										</div>
+										@if ($category === 'pending')
+										<div class="mt-5">
+											<button type="button" style="width: 49%;" class="btn btn-primary waves-effect waves-light"
+												data-toggle="modal" data-target="#myReschedule">Reschedule Request</button>
+											<button type="button" style="width: 50%;" class="btn btn-danger waves-effect waves-light">Cancel
+												Request</button>
+										</div>
+										<br><br>
+										@endif
+									</div>
+								</div>
 							</div>
+							@endforeach
+						</div>
 						@endforeach
 						{{-- <div class="tab-pane" id="pending-b2">
 							<div class="row">
@@ -681,18 +708,18 @@
 
 					<div class="form-group mb-3">
 						<label>Select Date</label>
-						<input type="text" class="form-control" data-provide="datepicker">
+						<input name="new-service-request-date" type="text" class="form-control" data-provide="datepicker">
 					</div>
 
 					<label>Select Timeslot</label>
-					<select class="form-control">
-						<option></option>
-						<option>2</option>
-						<option>3</option>
-						<option>4</option>
-						<option>5</option>
+					<select name="new-service-request-timeslot" class="form-control">
+						@foreach ($timeslots as $timeslot)
+						<option value="{{ $timeslot->id }}">
+							{{ date('g:i A', strtotime($timeslot->start)) }} -
+							{{ date('g:i A', strtotime($timeslot->end)) }}
+						</option>
+						@endforeach
 					</select>
-
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary waves-effect waves-light">Save</button>

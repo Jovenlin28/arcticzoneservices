@@ -302,21 +302,17 @@
                 <h6 class="mt-4">Step 6 of 6 : PAYMENTS DETAILS</h6>
                 <h2 class="mt-1 m-0" style="color: #1988f1;">Choose your mode of payment.</h2>
                 <br>
-                <div class="radio">
-                  <label for="half-payment">
-                    <input type="radio" name="payment_type" 
-                    id="half-payment" value="half">
-                    Half Payment
-                  </label>
-                </div>
-                <div class="radio">
-                  <label for="full-payment">
-                    <input type="radio" name="payment_type" 
-                    id="full-payment" value="full" checked>
-                    Full Payment
-                  </label>
-                </div>
-
+                @foreach ($payment_modes as $payment_mode)
+                  <div class="radio">
+                    <label for="payment-mode{{ $payment_mode->id }}">
+                      <input type="radio" 
+                      name="payment_mode_id" 
+                      id="{{ $payment_mode->name === 'Full Payment' ? 'full-payment' : 'half-payment' }}" 
+                      value="{{ $payment_mode->id }}">
+                      {{ $payment_mode->name }}
+                    </label>
+                  </div>
+                @endforeach
                 <br>
                 <h6>Breakdown of Payments</h6>
                 <table class="table mb-0">
@@ -396,34 +392,6 @@
         </div>
         <div class="card mt-3">
           <div id="unit_details_summary_template" class="container">
-            {{-- <br>
-            <div class="row">
-              <div class="col-md-6">
-                <p class="mt-3 m-0" style="color: #1988f1;">Appliance Type</p>
-                <small>TOWER</small>
-              </div>
-              <div class="col-md-6">
-                <p class="mt-3 m-0" style="color: #1988f1;">Unit Type</p>
-                <small>NON-INVERTER</small>
-              </div>
-            </div>
-            <p class="mt-4 m-0" style="color: #1988f1;">Brand</p>
-            <small>COLDFRONT</small>
-            <br><br>
-            <hr>
-            <div class="row">
-              <div class="col-md-6">
-                <p class="mt-3 m-0" style="color: #1988f1;">Appliance Type</p>
-                <small>TOWER</small>
-              </div>
-              <div class="col-md-6">
-                <p class="mt-3 m-0" style="color: #1988f1;">Unit Type</p>
-                <small>NON-INVERTER</small>
-              </div>
-            </div>
-            <p class="mt-4 m-0" style="color: #1988f1;">Brand</p>
-            <small>COLDFRONT</small>
-            <br><br> --}}
           </div>
         </div>
         <div class="card mt-3">
@@ -557,7 +525,7 @@ $(document).ready(function() {
       })
   });
 
-  $(document).on('change', 'input[name="payment_type"]', function(){
+  $(document).on('change', 'input[name="payment_mode_id"]', function(){
     const paymentType = $(this).val();
     if (paymentType === 'full') {
       totalPayment = totalPayment*2;
@@ -599,7 +567,7 @@ $(document).ready(function() {
     const $appliances = $('select[name="appliance_id"] option:checked');
     const $units = $('select[name="unit_id"] option:checked');
 
-    $('input[name="payment_type"]').prop('checked', false);
+    $('input[name="payment_mode_id"]').prop('checked', false);
     $('input#full-payment').prop('checked', true);
 
     let unitDetails = '';
