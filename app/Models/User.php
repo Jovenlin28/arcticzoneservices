@@ -15,6 +15,10 @@ class User extends Authenticatable
         'email', 'password', 'users_client_id'
     ];
 
+    protected $hidden = [
+      'password'
+    ];
+
     public function client() {
         return $this->belongsTo(UserClient::class, 'client_id');
     }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserClient;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class RegistrationController extends Controller
 {
@@ -17,26 +18,48 @@ class RegistrationController extends Controller
     }
 
     public function register(Request $request) {
-        $input = $request->all();
+      $input = $request->all();
+      $validator = $this->initializeValidation($input);
 
-        if (!User::where('email', $input['email'])->exists()) {
-            $userClient = UserClient::create([
-                'firstname' => $input['firstname'],
-                'lastname' => $input['lastname'],
-                'contact_number' => $input['contact_number'],
-            ]);
-
-            $userClient->user()->create([
-                'email' => $input['email'],
-                'password' => Hash::make($input['password'])
-            ]);
-
-            $this->send_email($input['email']);
-
-           
-        } 
-
+      if ($validator->fails()) {
+        return response()->json(array('errors' => $validator->getMessageBag()));
+      }
         
+      try {
+        if (!User::where('email', $input['email'])->exists()) {
+          $userClient = UserClient::create([
+              'firstname' => $input['firstname'],
+              'lastname' => $input['lastname'],
+              'contact_number' => $input['contact_number'],
+          ]);
+
+          $userClient->user()->create([
+              'email' => $input['email'],
+              'password' => Hash::make($input['password'])
+          ]);
+
+          $this->send_email($input['email']); 
+          
+          return [
+            'type' => 'success',
+            'title' => 'Success',
+            'message' => "You have been successfully registered"
+          ];
+        }
+      } catch (\Exception $e) {
+        return ['type' => 'error', 'title' => 'Error','message' => $e->getMessage()];
+      } 
+    }
+
+    private function initializeValidation($input) {
+      return Validator::make($input, [
+        'email' => 'required|email|unique:users',
+        'password' => 'min:6|required_with:password_confirmation|same:password_confirmation',
+        'password_confirmation' => 'min:6',
+        'contact_number' => 'required|numeric|digits:11',
+        'firstname' => 'required|string',
+        'lastname' => 'required|string',
+      ]);
     }
 
     private function send_email($email) {

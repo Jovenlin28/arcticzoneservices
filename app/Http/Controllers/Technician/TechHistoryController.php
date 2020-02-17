@@ -7,13 +7,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\UnitType;
 use App\Models\UserTechnician;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class TechHistoryController extends Controller
 {
 
     public function index() 
     {
+        $tech_id = Auth::guard('technician')->user()->id;
         $tech = UserTechnician::with([
             'service_requests' => function($query) {
                 $query->where('status', '=', 'completed');
@@ -24,8 +25,9 @@ class TechHistoryController extends Controller
             'service_requests.location',
             'service_requests.timeslot',
             'service_requests.appliances',
-            'service_requests.workdone'
-        ])->find(1)->toArray();
+            'service_requests.workdone',
+            'service_requests.remarks'
+        ])->find($tech_id)->toArray();
 
         foreach($tech['service_requests'] as &$service_request) {
             foreach($service_request['appliances'] as &$appliance) {
@@ -38,7 +40,9 @@ class TechHistoryController extends Controller
         // print_r($tech);
         // die();
 
-        return view('tech.tech_history')->with('completed_services', $tech['service_requests']);
+        return view('tech.tech_history')->with([
+          'completed_services' => $tech['service_requests'],
+          'tech_id' => $tech_id
+        ]);
     }
-    
 }

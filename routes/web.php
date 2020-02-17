@@ -23,6 +23,8 @@ Route::prefix('/')->namespace('Home')->group(function () {
     Route::post('/verify-code', 'EmailVerificationController@verify_code');
     Route::get('/service-request', 'ServiceRequestController@index')->middleware('auth');
     Route::post('/service-request/create', 'ServiceRequestController@create');
+    Route::post('/service-request/finish', 'ServiceRequestController@finish_service_request');
+    Route::post('/service-request/reschedule', 'ServiceRequestController@reschedule_service_request');
     Route::get('/voucher', 'VoucherController@index');
 });
 
@@ -30,27 +32,33 @@ Route::prefix('/')->namespace('Home')->group(function () {
 /**
  * Technician Pages
  */
-Route::prefix('tech')->namespace('Technician')->group(function () {
+Route::prefix('tech')->namespace('Technician')
+->middleware('auth:technician')
+->group(function () {
   Route::get('/home', 'TechDashboardController@index');
   Route::get('/account-settings', 'TechUpdateController@index');
   Route::get('/service-history', 'TechHistoryController@index');
-  
 });
 
 /**
  * Administration Pages
  */
-Route::prefix('admin')->namespace('Admin')->group(function () {
+Route::prefix('admin')->namespace('Admin')
+->middleware('auth:admin')
+->group(function () {
   Route::get('/dashboard', 'DashboardController@index');
   Route::get('/back_up_and_restore', 'BackUpController@index');
   Route::get('/generate_reports', 'ReportsController@index');
   Route::get('/profile/my_account', 'UpdateAccountController@index');
   Route::get('/technician_management', 'TechMngController@index');
+  Route::post('/tech_management/add_technician', 'TechMngController@add_technician');
   Route::get('/services', 'ServicesController@index');
+  Route::post('/services/assign_technicians', 'ServicesController@assign_technician');
   Route::get('/services/service_request_details', 'ServiceDetailsController@index');
   Route::get('/services/service_history', 'ServiceHistoryController@index');
   Route::get('/calendar', 'CalendarController@index');
-  
+  Route::put('/services/complete_service_request', 'ServicesController@complete_service_request');
+  Route::put('/technician_management/update_availability_status', 'TechMngController@update_availability_status');
 });
 
 
@@ -89,9 +97,13 @@ Route::prefix('client')->namespace('Client')->middleware('auth')->group(function
  * Authentication Pages
  */
 
+Route::get('/admin/logout', 'UsersController@admin_logout');
 Route::get('/admin/auth/login', 'UsersController@admin_login');
+Route::post('/admin/auth/login/verify', 'UsersController@admin_login_verify');
 Route::get('/admin/forgot_password', 'UsersController@admin_forgot_password');
+Route::get('/tech/logout', 'UsersController@tech_logout');
 Route::get('/tech/auth/login', 'UsersController@tech_login');
+Route::post('/tech/auth/login/verify', 'UsersController@tech_login_verify');
 Route::get('/tech/forgot_password', 'UsersController@tech_forgot_password');
 Route::get('/client/logout', 'UsersController@client_logout');
 Route::get('/client/auth/login', 'UsersController@client_login');

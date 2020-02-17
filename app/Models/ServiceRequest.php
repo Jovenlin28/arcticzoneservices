@@ -17,6 +17,10 @@ class ServiceRequest extends Model
         'service_date', 'payment_mode_id', 'is_paid'
     ];
 
+    public function remarks() {
+      return $this->hasMany(Remarks::class, 'service_request_id');
+    }
+
     public function appliances() {
         return $this->belongsToMany(Appliance::class, 'service_request_appliances')
         ->withPivot('brand_id', 'unit_id', 'qty');
@@ -31,7 +35,7 @@ class ServiceRequest extends Model
     public function workdone() {
         return $this->belongsToMany(
             Workdone::class, 'service_request_workdone'
-        );
+        )->withPivot('technician_id');
     }
 
     public function location() {

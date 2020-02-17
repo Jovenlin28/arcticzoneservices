@@ -8,12 +8,14 @@ use App\Models\Brand;
 use App\Models\UnitType;
 use App\Models\UserTechnician;
 use App\Models\Workdone;
+use Illuminate\Support\Facades\Auth;
 
 class TechDashboardController extends Controller
 {
 
     public function index() 
     {
+        $tech_id = Auth::guard('technician')->user()->id;
         $tech = UserTechnician::with([
             'service_requests.client',
             'service_requests.service_type',
@@ -21,8 +23,9 @@ class TechDashboardController extends Controller
             'service_requests.location',
             'service_requests.timeslot',
             'service_requests.appliances',
-            'service_requests.workdone'
-        ])->find(1)->toArray();
+            'service_requests.workdone',
+            'service_requests.remarks'
+        ])->find($tech_id)->toArray();
 
         foreach($tech['service_requests'] as &$service_request) {
             foreach($service_request['appliances'] as &$appliance) {
@@ -31,8 +34,7 @@ class TechDashboardController extends Controller
             }
         }
 
-        $workdone = Workdone::all()->toArray();
-        
+        $workdone = Workdone::all()->toArray();  
 
         // echo "<pre>";
         // print_r($tech);
@@ -40,7 +42,8 @@ class TechDashboardController extends Controller
 
         return view('tech.tech_dashboard')->with([
             'service_requests' => $tech['service_requests'],
-            'workdone' => $workdone
+            'workdone' => $workdone,
+            'tech_id' => $tech_id
         ]);
     }
     

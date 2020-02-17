@@ -54,7 +54,7 @@ class ClientDashboardController extends Controller
 
     private function groupByRequestStatus($client) {
         $client['service_requests_category'] = [
-            'new' => [], 'pending' => [], 'completed' => [], 'canceled' => []
+            'new' => [], 'pending' => [], 'completed' => [], 'cancelled' => []
         ];
 
         foreach($client['service_requests'] as $request) {
@@ -70,7 +70,7 @@ class ClientDashboardController extends Controller
                 array_push($client['service_requests_category']['completed'], $request);
             }
 
-            if ($request['status'] === 'canceled') {
+            if ($request['status'] === 'cancelled') {
                 array_push($client['service_requests_category']['cancelled'], $request);
             }
         }

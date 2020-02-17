@@ -58,6 +58,11 @@
     padding: 4rem 25rem;
 }
 
+span.status,
+button.action {
+    padding: 5px;
+}
+
 .message input[type=text] {
     width: 100%;
     padding: 12px 20px;
@@ -68,6 +73,11 @@
 
 .invisible {
     visibility: hidden;
+}
+
+.datepicker {
+    padding: 0!important;
+    border: 1px solid gray;
 }
 
 .date {
@@ -160,6 +170,8 @@ div.upload>input#avatar,
 
 .card-box {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.0), 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+    margin-bottom: 0!important;
+    margin-top: 24px!important;
 }
 
 .card>button.remove {
@@ -170,12 +182,6 @@ div.upload>input#avatar,
     padding: 0.6rem 0.6rem 0.6rem 0.6rem;
     color: white;
     font-size: 8px;
-}
-
-.message {}
-
-.footer {
-    position: fixed!important;
 }
 
 #wrapper {
@@ -279,6 +285,8 @@ div#request_summary {
     padding: 3rem 4rem;
     color: white;
     font-weight: 100;
+    position: relative!important;
+    left: 0!important;
 }
 
 .footer a {

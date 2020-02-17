@@ -47,7 +47,7 @@ class LocationController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|unique:locations,name,'
+            'name' => 'required|string|unique:locations'
         ]);
 
         if ($validator->fails()) {

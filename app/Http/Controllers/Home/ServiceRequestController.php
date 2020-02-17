@@ -9,11 +9,13 @@ use App\Models\Brand;
 use App\Models\Location;
 use App\Models\PaymentMode;
 use App\Models\PropertyType;
+use App\Models\Remarks;
 use App\Models\ServiceRequest;
 use App\Models\ServiceTimeslot;
 use App\Models\ServiceType;
 use App\Models\UnitType;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceRequestController extends Controller
 {
@@ -42,6 +44,49 @@ class ServiceRequestController extends Controller
             'timeslots' => $timeslots,
             'payment_modes' => $payment_modes
         ]);
+    }
+
+    public function reschedule_service_request(Request $request) {
+        $input = $request->all();
+
+        try {
+            $service_request = ServiceRequest::findOrFail($input['service_request_id']);
+            $service_request->timeslot_id = $input['timeslot_id'];
+            $service_request->service_date = date('Y-m-d', strtotime($input['service_date']));
+            $service_request->save();
+
+            return [
+                'type' => 'success',
+                'title' => 'Success',
+                'message' => "Successfully rescheduled service request",
+            ];
+        } catch(\Exception $e) {
+            return ['type' => 'error', 'title' => 'Error','message' => $e->getMessage()];
+        }
+    }
+
+    public function finish_service_request(Request $request) {
+        $input = $request->all();
+
+        try {
+            $remarks = new Remarks([
+              'name' => $input['remarks'],
+              'technician_id' => Auth::guard('technician')->user()->id
+            ]);
+            $service_request = ServiceRequest::findOrFail($input['service_request_id']);
+            $service_request->remarks()->save($remarks);
+
+            $service_request->workdone()->attach($input['workdone_id']);
+
+            return [
+                'type' => 'success',
+                'title' => 'Success',
+                'message' => "Service Job finished successfully",
+            ];
+        } catch(\Exception $e) {
+            return ['type' => 'error', 'title' => 'Error','message' => $e->getMessage()];
+        }
+        
     }
     
     public function create(Request $request) {

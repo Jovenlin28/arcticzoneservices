@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\UserClient;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
@@ -31,6 +33,25 @@ class UsersController extends Controller
         return view('authentication.admin_forgot');   
     }
 
+    public function admin_logout() {
+      Auth::guard('admin')->logout();
+      return redirect('admin/auth/login');
+    }
+
+    public function admin_login_verify(Request $request) {
+      $input = $request->all();
+      Validator::make($input, [
+        'username' => 'bail|required',
+        'password' => 'required|min:3'
+      ])->validate();
+
+      if (Auth::guard('admin')->attempt(Input::only('username', 'password'))) {
+          return redirect('admin/dashboard');
+      } else {
+          return Redirect::back()->withErrors(['Invalid Username or Password']);
+      }
+    }
+
 
 
     /**
@@ -48,17 +69,41 @@ class UsersController extends Controller
         return view('authentication.tech_forgot');
     }
 
+    public function tech_login_verify(Request $request) {
+      $input = $request->all();
+      Validator::make($input, [
+        'username' => 'bail|required',
+        'password' => 'required|min:3'
+      ])->validate();
+
+      if (Auth::guard('technician')->attempt(Input::only('username', 'password'))) {
+          return redirect('tech/home');
+      } else {
+          return Redirect::back()->withErrors(['Invalid Username or Password']);
+      }
+    }
+
+    public function tech_logout() {
+      Auth::guard('technician')->logout();
+      return redirect('tech/auth/login');
+    }
+
 
     /**
       * Client Authentication
       */
 
-    public function client_login_verify() {
+    public function client_login_verify(Request $request) {
+        $input = $request->all();
+        Validator::make($input, [
+          'email' => 'bail|required|email',
+          'password' => 'required|min:3'
+        ])->validate();
 
         if (Auth::attempt(Input::only('email', 'password'))) {
             return redirect('client/home');
         } else {
-            echo 'failed';
+            return Redirect::back()->withErrors(['Invalid Username or Password']);
         }
     }
 

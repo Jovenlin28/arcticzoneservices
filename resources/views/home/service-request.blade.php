@@ -137,7 +137,7 @@
                       <label for="timeslot-{{ $timeslot->id }}">
                         <input type="radio" id="timeslot-{{ $timeslot->id }}" value="{{ $timeslot->id }}"
                           name="timeslot_id">
-                        {{ $timeslot->start . ' - ' . $timeslot->end }}
+                        {{ date('h:i A', strtotime($timeslot->start)) . ' - ' . date('h:i A', strtotime($timeslot->end)) }}
                       </label>
                       <small class="small">
                         <br> 2 Technicians Left
@@ -303,15 +303,14 @@
                 <h2 class="mt-1 m-0" style="color: #1988f1;">Choose your mode of payment.</h2>
                 <br>
                 @foreach ($payment_modes as $payment_mode)
-                  <div class="radio">
-                    <label for="payment-mode{{ $payment_mode->id }}">
-                      <input type="radio" 
-                      name="payment_mode_id" 
-                      id="{{ $payment_mode->name === 'Full Payment' ? 'full-payment' : 'half-payment' }}" 
+                <div class="radio">
+                  <label for="{{ $payment_mode->name === 'Full Payment' ? 'full-payment' : 'half-payment' }}">
+                    <input type="radio" name="payment_mode_id"
+                      id="{{ $payment_mode->name === 'Full Payment' ? 'full-payment' : 'half-payment' }}"
                       value="{{ $payment_mode->id }}">
-                      {{ $payment_mode->name }}
-                    </label>
-                  </div>
+                    {{ $payment_mode->name }}
+                  </label>
+                </div>
                 @endforeach
                 <br>
                 <h6>Breakdown of Payments</h6>
@@ -422,7 +421,7 @@
 @push('scripts')
 
 <script type="text/javascript">
-$(document).ready(function() {
+  $(document).ready(function() {
   
 
   //initialize variable to handle current step count
@@ -497,17 +496,17 @@ $(document).ready(function() {
   });
 
   $('#datepicker').datepicker({
-    inline: true,
     showButtonPanel: true,
-    minDate: new Date(),
-    daysOfWeekDisabled: [0, 6],
+    startDate: "now()",
+    daysOfWeekDisabled: '06',
     dateFormat : 'MM dd, yy'
   });
 
   $(document).on('click', 'button#submit_btn', function() {
       const input = $('form#service-request').serializeArray();
       const transformedInput = transformData(input);
-      transformedInput.service_date = $('div#datepicker').datepicker().val();
+      const serviceDate = $('div#datepicker').datepicker('getDate');
+      transformedInput.service_date = $.datepicker.formatDate("MM dd, yy", serviceDate)
       $.ajax({
           url: ' {{url("service-request/create")}} ',
           headers: {
@@ -526,8 +525,8 @@ $(document).ready(function() {
   });
 
   $(document).on('change', 'input[name="payment_mode_id"]', function(){
-    const paymentType = $(this).val();
-    if (paymentType === 'full') {
+    const paymentType = $(this).attr('id');
+    if (paymentType === 'full-payment') {
       totalPayment = totalPayment*2;
     } else {
       totalPayment = totalPayment/2;
@@ -599,9 +598,11 @@ $(document).ready(function() {
       const $units = $('select[name="unit_id"] option:checked');
       const $brands = $('select[name="brand_id"] option:checked');
 
-      const serviceDate = $('div#datepicker').datepicker().val();
+      
 
-      $('#summary_service_date').text(serviceDate);
+      const serviceDate = $('div#datepicker').datepicker('getDate');
+
+      $('#summary_service_date').text($.datepicker.formatDate("MM dd, yy", serviceDate));
       $('#summary_timeslot').text(timeslot);
       $('#summary_service_type').text(serviceType);
       $('#summary_location').text(location);
