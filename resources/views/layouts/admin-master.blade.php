@@ -29,6 +29,8 @@
     type="text/css" />
   <link href="{{ asset ('/assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css') }}" rel="stylesheet"
     type="text/css" />
+  <link href="{{ asset ('/assets/libs/bootstrap-datepicker/bootstrap-datetimepicker.css') }}" rel="stylesheet"
+    type="text/css" />
   <link href="{{ asset ('/assets/libs/daterangepicker/daterangepicker.css') }}" rel="stylesheet" type="text/css" />
   <link href="{{ asset ('/assets/libs/jquery-vectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet"
     type="text/css" />
@@ -431,16 +433,17 @@
 
   {{-- <script src="{{ asset ('assets/libs/pdfmake/pdfmake.min.js') }}"></script>
   <script src="{{ asset ('assets/libs/pdfmake/vfs_fonts.js') }}"></script> --}}
-
+  <script src="{{ asset('assets/libs/moment/moment.min.js')}}"></script>
   <script src="{{ asset ('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js') }}"></script>
   <script src="{{ asset ('assets/libs/clockpicker/bootstrap-clockpicker.min.js') }}"></script>
   <script src="{{ asset ('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+  <script src="{{ asset ('assets/libs/bootstrap-datepicker/bootstrap-datetimepicker.js') }}"></script>
   <script src="{{ asset ('assets/libs/daterangepicker/daterangepicker.js') }}"></script>
   <!-- third party js ends -->
 
 
   <!-- plugin js -->
-  <script src="{{ asset('assets/libs/moment/moment.min.js')}}"></script>
+  
   <script src="{{ asset('assets/libs/jquery-ui/jquery-ui.min.js')}}"></script>
   <script src="{{ asset('assets/libs/fullcalendar/fullcalendar.min.js')}}"></script>
 

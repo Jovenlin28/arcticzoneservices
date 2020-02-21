@@ -158,12 +158,19 @@
                 <div class="card-box">
                   <ul class="nav nav-pills navtab-bg">
                     <li class="nav-item">
-                      <a href="#yes" data-toggle="tab" aria-expanded="true" class="nav-link active">
+                      <a href="#yes"
+                        data-answer="yes"
+                        data-toggle="tab" 
+                        aria-expanded="true" 
+                        class="nav-link active client_details">
                         <i class="mdi mdi-timeline mr-1"></i>YES
                       </a>
                     </li>
                     <li class="nav-item">
-                      <a href="#no" data-toggle="tab" aria-expanded="false" class="nav-link">
+                      <a href="#no" 
+                        data-answer="no"
+                        data-toggle="tab" 
+                        aria-expanded="false" class="nav-link client_details">
                         <i class="mdi mdi-settings-outline mr-1"></i>NO
                       </a>
                     </li>
@@ -237,14 +244,20 @@
                         <div class="col-md-6">
                           <div class="form-group">
                             <label>Contact First Name</label>
-                            <input type="text" class="form-control" id="contact_firstname"
+                            <input type="text" 
+                              name="contact_firstname"
+                              class="form-control" 
+                              id="contact_firstname"
                               placeholder="Enter contact firstname">
                           </div>
                         </div>
                         <div class="col-md-6">
                           <div class="form-group">
                             <label>Contact Last Name</label>
-                            <input type="text" class="form-control" id="contact_lastname"
+                            <input type="text" 
+                              name="contact_lastname"
+                              class="form-control" 
+                              id="contact_lastname"
                               placeholder="Enter contact last name">
                           </div>
                         </div> <!-- end col -->
@@ -254,25 +267,37 @@
                         <div class="col-md-6">
                           <div class="form-group">
                             <label>Email Address</label>
-                            <input type="text" class="form-control" id="email_address" placeholder="">
+                            <input type="text"
+                            name="contact_email" 
+                            class="form-control" 
+                            id="contact_email" placeholder="">
                           </div>
                         </div>
                         <div class="col-md-6">
                           <div class="form-group">
                             <label>Mobile Number</label>
-                            <input type="text" class="form-control" id="mobile_no" placeholder="">
+                            <input type="text" 
+                            name="contact_mobile_number"
+                            class="form-control" 
+                            id="contact_mobile_number" placeholder="">
                           </div>
                         </div> <!-- end col -->
                       </div> <!-- end row -->
 
                       <div class="form-group">
                         <label>Service Address</label>
-                        <input type="text" class="form-control" id="service_address" placeholder="">
+                        <input type="text" 
+                        name="contact_address"
+                        class="form-control" 
+                        id="contact_address" placeholder="">
                       </div>
 
                       <div class="form-group">
                         <label>Near Landmark</label>
-                        <input type="text" class="form-control" id="near_landmark" placeholder="">
+                        <input type="text" 
+                        name="contact_near_landmark"
+                        class="form-control" 
+                        id="contact_near_landmark" placeholder="">
                       </div>
 
 
@@ -280,7 +305,9 @@
                         <div class="col-12">
                           <div class="form-group">
                             <label for="userbio">Additional Instructions</label>
-                            <textarea class="form-control" id="addtl_instruc" rows="4"
+                            <textarea class="form-control" 
+                              name="contact_additional_instruction"
+                              id="contact_additional_instruction" rows="4"
                               placeholder="Any special instructions to technician?"></textarea>
                             <small class="text-muted">150 characters</small>
                           </div>
@@ -324,18 +351,6 @@
                     </tr>
                   </thead>
                   <tbody id="unit-details-rows">
-                    {{-- <tr>
-                      <th scope="row">1</th>
-                      <td>Non-Inverter</td>
-                      <td>Tower</td>
-                      <td>2,000.00</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Inverter</td>
-                      <td>Tower</td>
-                      <td>2,000.00</td>
-                    </tr> --}}
                   </tbody>
                 </table>
                 <br>
@@ -356,6 +371,8 @@
                 </div>
               </div>
             </div>
+            <br>
+            <div id="validation-errors"></div>
           </form>
 
 
@@ -431,6 +448,12 @@
 
   let totalPayment;
 
+  let isHomeAddress = true;
+
+  let serviceFees;
+
+  initServiceFees();
+
   //next button click event capture
   $(document).on('click', '#next_btn', function() {
       //hide previous step
@@ -460,6 +483,7 @@
 
   //back button click event capture
   $(document).on('click', '#back_btn', function() {
+      $('div#validation-errors').html('');
       //prevent back button click when active step is 1
       if (activeStep > 1) {
           //hide current step
@@ -502,11 +526,17 @@
     dateFormat : 'MM dd, yy'
   });
 
+  $(document).on('click', 'a.client_details', function(){
+    isHomeAddress = $(this).attr('data-answer') === 'yes';
+  });
+
   $(document).on('click', 'button#submit_btn', function() {
       const input = $('form#service-request').serializeArray();
       const transformedInput = transformData(input);
       const serviceDate = $('div#datepicker').datepicker('getDate');
-      transformedInput.service_date = $.datepicker.formatDate("MM dd, yy", serviceDate)
+      transformedInput.service_date = $.datepicker.formatDate("MM dd, yy", serviceDate);
+      transformedInput.is_home_address = isHomeAddress;
+      console.log(transformedInput);
       $.ajax({
           url: ' {{url("service-request/create")}} ',
           headers: {
@@ -515,7 +545,22 @@
           type: 'POST',
           data: { data: transformedInput },
           success: function(res) {
-              window.location = ' {{url("voucher")}} '
+            let errorsTemplate = '<h4>There are errors creating service request</h4><ul>';
+            if (res.errors) {
+              for (const key in res.errors) {
+                errorsTemplate += `<li class="text-danger">${res.errors[key][0]}</li>`;
+              }
+              errorsTemplate += '</ul>';
+              $('div#validation-errors').html(errorsTemplate);
+            } else {
+              Swal.fire(
+                res.title,
+                res.message,
+                res.type
+              ).then(() => {
+                window.location = ' {{url("voucher")}} ';
+              });
+            }
           },
 
           error: function(err) {
@@ -546,6 +591,12 @@
       $('.' + step).fadeOut();
   }
 
+  function initServiceFees() {
+    $.get("{{ url('pricing/get-service-fees') }}", function(data) {
+      serviceFees = data;
+    });
+  }
+
   function transformData(input) {
       const arrayData = ['appliance_id', 'brand_id', 'unit_id'];
       return input.reduce((acc, item) => {
@@ -572,8 +623,17 @@
     let unitDetails = '';
     totalPayment = 0;
 
+    const service_type_id = +$('input[name="service_type_id"]:checked').val();
+    console.log(serviceFees);
+
     $.each($appliances, function(index, elem) {
-      const fee = +elem.getAttribute('data-fee');
+      let fee;
+      const appliance_id = +elem.value;
+      serviceFees.forEach(serviceFee => {
+        if (serviceFee.service_id === service_type_id && serviceFee.appliance_id === appliance_id) {
+          fee = serviceFee.fee;
+        }
+      });
       totalPayment += fee;
       unitDetails += `
       <tr>

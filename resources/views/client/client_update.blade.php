@@ -25,12 +25,21 @@
       <div class="row">
         <div class="col-lg-4 col-xl-4">
           <div class="card-box text-center">
-            <img src="{{ asset('assets/images/default.png')}}" class="rounded-circle avatar-lg img-thumbnail"
-              alt="profile-image">
-            <div class="upload">
-              <label for="avatar">Update Photo</label>
-              <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
-            </div>
+            <form method="post" id="upload-photo" enctype="multipart/form-data">
+              {{ csrf_field() }}
+              <div class="photo-preview">
+                <img src="{{ $user->avatar === null ? 
+                asset('assets/images/default.png') : 
+                url('/uploads' . '/' . $user->avatar) }}" 
+                  id="photo-preview"
+                  class="rounded-circle avatar-lg img-thumbnail"
+                  alt="profile-image">
+              </div>
+              <div class="upload">
+                <label for="avatar">Update Photo</label>
+                <input type="file" id="avatar" name="file" accept="image/png, image/jpeg">
+              </div>
+            </form>
 
             <h4 class="mb-0">
               {{ $user->client->firstname . ' ' . $user->client->lastname }}
@@ -72,9 +81,6 @@
 
         <div class="col-lg-8 col-xl-8">
           <div class="card-box">
-
-
-
             <div class="tab-pane" id="settings">
               <form id="update-user">
                 <input type="hidden" name="user_id" value="{{ $user->id }}">
@@ -171,64 +177,97 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
-        $('form#update-user').submit(function(evt){
-            evt.preventDefault();
-            updateUser($(this));
-        });
-
-        $('input#avatar').on('change', function(evt){
-            console.log(evt);
-        });
+    $('form#update-user').submit(function(evt){
+      evt.preventDefault();
+      updateUser($(this));
     });
 
-    function transformData(data) {
-        return data.reduce((acc, item) => {
-            acc[item.name] = item.value;
-            return acc;
-        }, {})
-    }
-
-    function renderNewData(user) {
-        $("span#fullname").text(user.firstname + ' ' + user.lastname);
-        $("span#email").text(user.email);
-        $("span#address").text(user.address);
-        $("span#contact-number").text(user.contact);
-    }
-
-
-    function updateUser(form) {
-      $('.is-invalid').removeClass('is-invalid');
-      $('p.text-danger').text('');
+    $('input#avatar').on('change', function(evt){
       $.ajax({
+        url:"{{ url('client/upload_photo') }}",
         headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url: ' {{ url("client/update") }} ',
-        type: 'PUT',
-        data: form.serialize(),
+        method:"POST",
+        data: new FormData($('form#upload-photo')[0]),
+        dataType:'JSON',
+        contentType: false,
+        cache: false,
+        processData: false,
         success: function(res) {
           if (res.errors) {
-            for (const key in res.errors) {
-              $(`[name=${key}]`).addClass('is-invalid');
-              $(`[name=${key}]`).next().text(res.errors[key][0]);
-            }
+            Swal.fire(
+              'Error uploading files:',
+              res.errors.file[0],
+              'error'
+            )
           } else {
-            const userInfoObject = transformData(form.serializeArray());
             Swal.fire(
               res.title,
               res.message,
               res.type
             ).then(() => {
-              renderNewData(userInfoObject);
-            })
+              $('.photo-preview').html(res.uploaded_image);
+            });
           }
+          
         },
 
         error: function(err) {
           console.log(err);
         }
-      })
-    }
+      });
+    });
+  });
+
+  function transformData(data) {
+    return data.reduce((acc, item) => {
+        acc[item.name] = item.value;
+        return acc;
+    }, {})
+  }
+
+  function renderNewData(user) {
+    $("span#fullname").text(user.firstname + ' ' + user.lastname);
+    $("span#email").text(user.email);
+    $("span#address").text(user.address);
+    $("span#contact-number").text(user.contact);
+  }
+
+
+  function updateUser(form) {
+    $('.is-invalid').removeClass('is-invalid');
+    $('p.text-danger').text('');
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      url: ' {{ url("client/update") }} ',
+      type: 'PUT',
+      data: form.serialize(),
+      success: function(res) {
+        if (res.errors) {
+          for (const key in res.errors) {
+            $(`[name=${key}]`).addClass('is-invalid');
+            $(`[name=${key}]`).next().text(res.errors[key][0]);
+          }
+        } else {
+          const userInfoObject = transformData(form.serializeArray());
+          Swal.fire(
+            res.title,
+            res.message,
+            res.type
+          ).then(() => {
+            renderNewData(userInfoObject);
+          });
+        }
+      },
+
+      error: function(err) {
+        console.log(err);
+      }
+    })
+  }
 </script>
 
 

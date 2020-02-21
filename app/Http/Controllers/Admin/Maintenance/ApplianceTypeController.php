@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin\Maintenance;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Appliance;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 
 class ApplianceTypeController extends Controller
@@ -30,9 +31,10 @@ class ApplianceTypeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-       
+      echo 'test';
+      
     }
 
     /**
@@ -43,6 +45,35 @@ class ApplianceTypeController extends Controller
      */
     public function store(Request $request)
     {
+      $input = $request->all();
+      $validator = Validator::make($input, [
+        'name' => 'required',
+        'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+      ]);
+
+      if ($validator->fails()) {
+        return response()->json(array('errors' => $validator->getMessageBag()));
+      }
+
+      try {
+        $image = $request->file('file');
+        $new_name = time() . '-' . $input['name'] . '.' . $image->getClientOriginalExtension();
+        $image->move(public_path('uploads/appliances'), $new_name);
+
+        $user = Appliance::create([
+          'name' => $input['name'],
+          'image' => $new_name
+        ]);
+
+        return response()->json([
+          'type' => 'success',
+          'title' => 'Success',
+          'message'   => 'Appliance Type has been successfully added',
+        ]);
+
+      } catch (\Exception $e) {
+        return ['type' => 'error', 'title' => 'Error','message' => $e->getMessage()];
+      }
         
     }
 
@@ -77,6 +108,42 @@ class ApplianceTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
+      $input = $request->all();
+      
+      $validator = Validator::make($input, [
+        'name' => 'required',
+        'file' => $request->hasFile('file') ? 'image|mimes:jpeg,png,jpg,gif|max:2048' : ''
+      ]);
+
+      if ($validator->fails()) {
+        return response()->json(array('errors' => $validator->getMessageBag()));
+      }
+
+      try {
+        if ($request->hasFile('file')) {
+          $image = $request->file('file');
+          $new_name = time() . '-' . $input['name'] . '.' . $image->getClientOriginalExtension();
+          $image->move(public_path('uploads/appliances'), $new_name);
+
+          Appliance::find($id)->update([
+            'name' => $input['name'],
+            'image' => $new_name
+          ]);
+        } else {
+          Appliance::find($id)->update([
+            'name' => $input['name']
+          ]);
+        }  
+
+        return response()->json([
+          'type' => 'success',
+          'title' => 'Success',
+          'message'   => 'Appliance Type has been successfully updated',
+        ]);
+
+      } catch (\Exception $e) {
+        return ['type' => 'error', 'title' => 'Error','message' => $e->getMessage()];
+      }
        
     }
 
@@ -88,6 +155,8 @@ class ApplianceTypeController extends Controller
      */
     public function destroy($id)
     {
-       
+      Appliance::findOrFail($id)->delete();
+
+      return response()->json(['message' => 'Deleted!']);
     }
 }

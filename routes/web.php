@@ -19,6 +19,7 @@ Route::prefix('/')->namespace('Home')->group(function () {
     Route::get('/registration', 'RegistrationController@index');
     Route::post('/registration/verify', 'RegistrationController@register');
     Route::get('/pricing', 'PricingController@index');
+    Route::get('/pricing/get-service-fees', 'PricingController@get_service_fees');
     Route::get('/unverified-email', 'EmailVerificationController@index');
     Route::post('/verify-code', 'EmailVerificationController@verify_code');
     Route::get('/service-request', 'ServiceRequestController@index')->middleware('auth');
@@ -26,6 +27,10 @@ Route::prefix('/')->namespace('Home')->group(function () {
     Route::post('/service-request/finish', 'ServiceRequestController@finish_service_request');
     Route::post('/service-request/reschedule', 'ServiceRequestController@reschedule_service_request');
     Route::get('/voucher', 'VoucherController@index');
+    Route::get('/voucher/download', 'VoucherController@download_voucher');
+
+    Route::get('/reports/client-billing-details', 'ReportsController@client_billing_details');
+    Route::get('/reports/service-requests', 'ReportsController@service_requests');
 });
 
 
@@ -49,23 +54,30 @@ Route::prefix('admin')->namespace('Admin')
   Route::get('/dashboard', 'DashboardController@index');
   Route::get('/back_up_and_restore', 'BackUpController@index');
   Route::get('/generate_reports', 'ReportsController@index');
+  Route::get('/generate_reports/service_requests_report', 'ReportsController@generate_service_requests_report');
+  Route::get('/generate_reports/service_requests_status_report', 'ReportsController@generate_service_requests_status_report');
+  Route::get('/generate_reports/technician_service_jobs_report', 'ReportsController@generate_technician_service_jobs_report');
+  Route::get('/generate_reports/client_billing_report', 'ReportsController@generate_client_billing_report');
   Route::get('/profile/my_account', 'UpdateAccountController@index');
   Route::get('/technician_management', 'TechMngController@index');
   Route::post('/tech_management/add_technician', 'TechMngController@add_technician');
   Route::get('/services', 'ServicesController@index');
   Route::post('/services/assign_technicians', 'ServicesController@assign_technician');
-  Route::get('/services/service_request_details', 'ServiceDetailsController@index');
+  Route::get('/services/service_request_details/{id}', 'ServicesController@get_service_request');
   Route::get('/services/service_history', 'ServiceHistoryController@index');
   Route::get('/calendar', 'CalendarController@index');
   Route::put('/services/complete_service_request', 'ServicesController@complete_service_request');
   Route::put('/technician_management/update_availability_status', 'TechMngController@update_availability_status');
+  Route::post('/service_request/confirm_payment', 'ServicesController@confirm_payment');
 });
 
 
 /**
  * Maintenance Pages
  */
-Route::prefix('admin/maintenance')->namespace('Admin\Maintenance')->group(function () {
+Route::prefix('admin/maintenance')->namespace('Admin\Maintenance')
+->middleware('auth:admin')
+->group(function () {
   Route::resource('/service_types', 'ServiceTypeController');
   Route::resource('/property_types', 'PropertyTypeController');
   Route::resource('/location', 'LocationController');
@@ -90,6 +102,10 @@ Route::prefix('client')->namespace('Client')->middleware('auth')->group(function
   Route::get('/home', 'ClientDashboardController@index');
   Route::get('/account_settings', 'ClientUpdateController@index');
   Route::put('/update', 'ClientUpdateController@update');
+  Route::post('/upload_photo', 'ClientUpdateController@upload_photo');
+  Route::post('/service_request/attach_receipt_payment', 'ClientDashboardController@attach_receipt_payment');
+  Route::put('/service_request/cancel', 'ClientDashboardController@cancel_service_request');
+  Route::get('/generate_reports/client_billing_report', 'ReportsController@generate_client_billing_report');
 });
 
 

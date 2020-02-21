@@ -116,10 +116,22 @@
                     <h5>Service Request Information</h5>
                     <hr>
                     @if ($category === 'new')
-                    <p>Before we assign your service requested to our technician. Kindly pay first
-                      using our given voucher and send us your receipt of payment <a href="" data-toggle="modal"
-                        data-target="#myModal">here</a>.
-                    </p>
+                      @if ($request['receipt_payment_file'] === null)
+                      <p>Before we assign your service requested to our technician. Kindly pay first
+                        using our given voucher and send us your receipt of payment 
+                        <a href="" 
+                          id="{{$request['id']}}"
+                          class="receipt_payment"
+                          data-toggle="modal"
+                          data-target="#attachReceiptPayment">here</a>.
+                      </p>
+                      @else
+                        <a href="" 
+                        data-payment_receipt_filepath="{{ url('/uploads' . '/receipt_payments' . '/' . $request['receipt_payment_file']) }}"
+                        class="view_payment_receipt"
+                        data-toggle="modal"
+                        data-target="#viewReceiptPayment">View payment receipt</a>.
+                      @endif
                     @endif
                     <p class="text-muted mt-4"><b>SERVICE DETAILS</b></p>
                     <div class="row">
@@ -140,7 +152,7 @@
                         <p>
                           {{ date('g:iA', strtotime($request['timeslot']['start'])) }} -
                           {{ date('g:iA', strtotime($request['timeslot']['end'])) }}
-                          <br> {{ date('M d, y', strtotime($request['service_date'])) }}
+                          <br> {{ date('M d, Y', strtotime($request['service_date'])) }}
                         </p>
                       </div>
 
@@ -234,7 +246,9 @@
                       </div>
                       <div class="col-md-3">
                         <p class="text-muted">Total Payment</p>
-                        <p><a href="">See full details</a></p>
+                        <p>
+                          <a onclick="show_client_billing({{ $client['id'] }}, {{ $request['id'] }})" href="#">See full details</a>
+                        </p>
                       </div>
                       <div class="col-md-3">
                         <p class="text-muted">Date and Time Received</p>
@@ -246,7 +260,10 @@
                       <button type="button" data-service-request-id="{{ $request['id'] }}" style="width: 49%;"
                         class="reschedule-service-request btn btn-primary waves-effect waves-light" data-toggle="modal"
                         data-target="#myReschedule">Reschedule Request</button>
-                      <button type="button" style="width: 50%;" class="btn btn-danger waves-effect waves-light">Cancel
+                      <button type="button" 
+                        onclick="cancelServiceRequest( {{$request['id']}} )"
+                        style="width: 50%;" 
+                        class="btn btn-danger waves-effect waves-light">Cancel
                         Request</button>
                     </div>
                     <br><br>
@@ -267,7 +284,36 @@
 
 
   <!-- sample modal content -->
-  <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div id="attachReceiptPayment" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="attach_receipt_payment" enctype="multipart/form-data">
+          @csrf
+          <input type="hidden" name="service_request_id">
+          <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Payment Receipt</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          </div>
+          <div class="modal-body">
+  
+            <p>Please attach the file here. Use your Service Request ID number in image name. We only accept the
+              image with 300-400 KB (kilobytes).</p>
+            <div class="form-group">
+              <label for="receipt_payment">Attach Payment Receipt</label><br>
+              <input name="file" type="file" id="receipt_payment">
+              <p class="help-block"></p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary waves-effect waves-light">Send</button>
+          </div>
+        </form>
+        
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+  <div id="viewReceiptPayment" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -275,19 +321,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         </div>
         <div class="modal-body">
-
-          <p>Please attach the file here. Use your Service Request ID number in image name. We only accept the
-            image with 300-400 KB (kilobytes).</p>
-
-          <div class="form-group">
-            <label for="exampleInputFile">File input</label><br>
-            <input type="file" id="exampleInputFile">
-            <p class="help-block"></p>
-          </div>
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary waves-effect waves-light">Send</button>
+          <img width="100%" src="" id="payment_receipt">
         </div>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -342,11 +376,61 @@
 			startDate: "now()" ,
 			daysOfWeekDisabled: '06',
 			dateFormat : 'MM dd, yy'
-  	});
+    });
+    
+    $('a.receipt_payment').on('click', function(){
+      const sr_id = $(this).attr('id');
+      $('input[name="service_request_id"]').val(sr_id);
+    });
+
+    $('a.view_payment_receipt').on('click', function(){
+      const payment_receipt_filepath = $(this).attr('data-payment_receipt_filepath');
+      $('img#payment_receipt').attr('src', payment_receipt_filepath);
+    });
 
 		$('button.reschedule-service-request').on('click', function(){
 			service_request_id = $(this).attr('data-service-request-id');
-		});
+    });
+    
+    $('form#attach_receipt_payment').on('submit', function(evt){
+      evt.preventDefault();
+      $.ajax({
+        url:"{{ url('client/service_request/attach_receipt_payment') }}",
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method:"POST",
+        data: new FormData(this),
+        dataType:'JSON',
+        contentType: false,
+        cache: false,
+        processData: false,
+        success: function(res) {
+          console.log(res);
+          if (res.errors) {
+            Swal.fire(
+              'Error uploading files:',
+              res.errors.file[0],
+              'error'
+            )
+          } else {
+            Swal.fire(
+              res.title,
+              res.message,
+              res.type
+            ).then(() => {
+              // $('.photo-preview').html(res.uploaded_image);
+              window.location.reload();
+            });
+          }
+          
+        },
+
+        error: function(err) {
+          console.log(err);
+        }
+      });
+    });
 
 		$('button#reschedule-service-request').on('click', function(){
 			const timeslot_id = $('select#new-timeslot-id').val();
@@ -373,8 +457,48 @@
 					console.log(err);
 				}
 			});
-		})
-	});
+    })
+  });
+
+  function show_client_billing(client_id, sr_id) {
+    window.location = `/client/generate_reports/client_billing_report?client_id=${client_id}&sr_id=${sr_id}`;
+  }
+  
+  function cancelServiceRequest(id) {
+    Swal.fire({
+      title: 'Cancel Service Request ' + 'SR0' + id,
+      text: "You won't be able to revert this!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Confirm'
+    }).then((result) => {
+      if (result.value) {
+        $.ajax({
+          url: "/client/service_request/cancel/",
+          headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          method: 'PUT',
+          data: {service_request_id: id},
+          success: function (data){
+            console.log(data);
+            Swal.fire(
+            data.title,
+            data.message,
+            data.type
+            ).then(() => {
+              window.location.reload();
+            });
+          },
+          error: function(data){
+              //
+          }
+        });
+      }
+    });
+  }
 </script>
 
 @endsection

@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin\Maintenance;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ServiceTimeslot;
+use DateTime;
 use Illuminate\Support\Facades\Validator;
 
 class TimeslotsController extends Controller
@@ -41,6 +42,31 @@ class TimeslotsController extends Controller
      */
     public function store(Request $request)
     {
+      $input = $request->all();
+      $validator = Validator::make($input, [
+        'start_time' => 'required|date_format:h:iA',
+        'end_time' => 'required|date_format:h:iA,'
+      ]);
+  
+      if ($validator->fails()) {
+        return response()->json(array('errors' => $validator->getMessageBag()->toarray()));
+      } else {
+        try {
+          $timeslot = ServiceTimeslot::create([
+            'start' => DateTime::createFromFormat( 'h:iA', $input['start_time'])->format('H:i:s'),
+            'end' => DateTime::createFromFormat( 'h:iA', $input['end_time'])->format('H:i:s')
+          ]);
+  
+          return [
+            'type' => 'success',
+            'title' => 'Success',
+            'message' => "Service Timeslot information added successfully",
+            'timeslot' => $timeslot
+          ];
+        } catch (\Exception $e) {
+          return ['type' => 'error', 'title' => 'Error', 'message' => $e->getMessage()];
+        }
+      }
         
     }
 
@@ -75,7 +101,31 @@ class TimeslotsController extends Controller
      */
     public function update(Request $request, $id)
     {
-       
+      $input = $request->all();
+      $validator = Validator::make($input, [
+        'start_time' => 'required|date_format:h:iA',
+        'end_time' => 'required|date_format:h:iA,'
+      ]);
+  
+      if ($validator->fails()) {
+        return response()->json(array('errors' => $validator->getMessageBag()->toarray()));
+      } else {
+        try {
+          $timeslot = ServiceTimeslot::findOrFail($input['timeslot_id'])->update([
+            'start' => DateTime::createFromFormat( 'h:iA', $input['start_time'])->format('H:i:s'),
+            'end' => DateTime::createFromFormat( 'h:iA', $input['end_time'])->format('H:i:s')
+          ]);
+  
+          return [
+            'type' => 'success',
+            'title' => 'Success',
+            'message' => "Service Timeslot information updated successfully",
+            'timeslot' => $timeslot
+          ];
+        } catch (\Exception $e) {
+          return ['type' => 'error', 'title' => 'Error', 'message' => $e->getMessage()];
+        }
+      }
     }
 
     /**
@@ -86,6 +136,8 @@ class TimeslotsController extends Controller
      */
     public function destroy($id)
     {
-       
+      ServiceTimeslot::findOrFail($id)->delete();
+
+      return response()->json(['message' => 'Deleted!']);
     }
 }

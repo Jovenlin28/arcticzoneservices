@@ -34,7 +34,7 @@
 
       <div class="mt-1">
         <div class="text-right">
-          <h2 class="mt-3 pt-1 mb-1"> 268 </h2>
+          <h2 class="mt-3 pt-1 mb-1"> {{ $status_group['new'] }} </h2>
           <p class="text-muted mb-0">Total Number</p>
         </div>
         <div class="clearfix"></div>
@@ -53,7 +53,7 @@
           <i class="glyphicon glyphicon-wrench"></i>
         </div>
         <div class="text-right">
-          <h2 class="mt-3 pt-1 mb-1"> 8715 </h2>
+          <h2 class="mt-3 pt-1 mb-1"> {{ $status_group['assigned'] }} </h2>
           <p class="text-muted mb-0">Total Number</p>
         </div>
         <div class="clearfix"></div>
@@ -70,7 +70,7 @@
       <div class="mt-1">
 
         <div class="text-right">
-          <h2 class="mt-3 pt-1 mb-1"> 925 </h2>
+          <h2 class="mt-3 pt-1 mb-1"> {{ $status_group['on_going'] }} </h2>
           <p class="text-muted mb-0">Total Number</p>
         </div>
         <div class="clearfix"></div>
@@ -85,7 +85,7 @@
 
       <div class="mt-1">
         <div class="text-right">
-          <h2 class="mt-3 pt-1 mb-1"> 78 </h2>
+          <h2 class="mt-3 pt-1 mb-1"> {{ $status_group['closed'] }} </h2>
           <p class="text-muted mb-0">Total Number</p>
         </div>
         <div class="clearfix"></div>
@@ -113,12 +113,15 @@
             </tr>
           </thead>
           <tbody>
+            @foreach ($technicians as $technician)
             <tr>
-              <td>1</td>
-              <td>Jose Rizal</td>
-              <td>4</td>
-              <td>Assigned</td>
+              <td>{{ $technician['id'] }}</td>
+              <td>{{ $technician['tech_info']['firstname'] . ' ' . $technician['tech_info']['lastname'] }}</td>
+              <td>{{ $technician['service_requests_count'] }}</td>
+              <td>{{ $technician['availability_status'] === 1 ? 'Assigned' : 'Not Assigned' }}</td>
             </tr>
+            @endforeach
+            
           </tbody>
         </table>
       </div>
@@ -139,11 +142,13 @@
             </tr>
           </thead>
           <tbody>
+            @foreach ($locations as $location)
             <tr>
-              <td>1</td>
-              <td>Quezon City</td>
-              <td>2</td>
+              <td>{{ $location['id'] }}</td>
+              <td>{{ $location['name'] }}</td>
+              <td>{{ $location['service_requests_count'] }}</td>
             </tr>
+            @endforeach
 
           </tbody>
         </table>
@@ -170,18 +175,24 @@
         </tr>
       </thead>
       <tbody>
+
+        @foreach ($service_requests as $service_request)
         <tr>
-          <td>1</td>
-          <td>Cleaning</td>
-          <td>Sofia Valerio</td>
-          <td>Jan 12 2020 9:00 - 12:00</td>
-          <td><a href="">See full details</a></td>
-          <td>2,750.00</td>
-          <td>Paid</td>
-
-
+          <td>{{ $service_request['id'] }}</td>
+          <td>{{ $service_request['service_type']['name'] }}</td>
+          <td>{{ $service_request['client']['firstname'] . ' ' . $service_request['client']['lastname'] }}</td>
+          <td>
+            {{ date('M d, y', strtotime($service_request['service_date'])) }} 
+            {{ date('g:i A', strtotime($service_request['timeslot']['start'])) }} - 
+            {{ date('g:i A', strtotime($service_request['timeslot']['end'])) }}
+          </td>
+          <td>
+            <a onclick="show_billing({{ $service_request['client_id'] }}, {{ $service_request['id'] }})" href="#">See full details</a>
+          </td>
+          <td>{{ $service_request['total_amount'] }}.00</td>
+          <td>{{ $service_request['is_paid'] === 1 ? 'Paid' : 'Not paid yet' }}</td>
         </tr>
-
+        @endforeach
       </tbody>
     </table>
   </div>
@@ -195,3 +206,18 @@
 
 
 @endsection
+
+@push('scripts')
+
+<script type="text/javascript">
+
+  $(document).ready(function(){
+    
+  });
+
+  function show_billing(client_id, sr_id) {
+    window.location = `/admin/generate_reports/client_billing_report?client_id=${client_id}&sr_id=${sr_id}`;
+  }
+
+</script>
+@endpush

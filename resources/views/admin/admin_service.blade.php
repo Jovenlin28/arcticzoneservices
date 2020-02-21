@@ -46,7 +46,7 @@
             @foreach ($service_requests as $service_request)
             <tr>
               <td>
-                <a href="{{ url('/admin/services/service_request_details')}}">
+                <a href="{{ url('/admin/services/service_request_details/' . $service_request['id'])}}">
                   {{ $service_request['id'] }}
                 </a>
               </td>
@@ -66,6 +66,16 @@
                   <span class="badge badge-primary status">
                     New
                   </span>
+
+                  @if ($service_request['is_paid'])
+                  <span class="badge badge-success status">
+                    Paid
+                  </span>
+                  @else
+                  <span class="badge badge-danger status">
+                    Not yet paid
+                  </span>
+                  @endif
                 @endif
 
                 @if ($service_request['status'] === 'pending')
@@ -96,7 +106,7 @@
                 
               </td>
               <td>
-                @if ($service_request['status'] === 'new')
+                @if ($service_request['status'] === 'new' && $service_request['is_paid'])
                   <button data-toggle="modal"
                     data-service-request-id="{{ $service_request['id'] }}"
                     data-target="#assign-tech" 

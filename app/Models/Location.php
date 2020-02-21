@@ -12,8 +12,7 @@ class Location extends Model
 
     protected $fillable = ['name'];
 
-    public function get_locations($id)
-    {
-        return DB::select('SELECT * FROM locations WHERE id = "'.$id.'"');
+    public function service_requests() {
+      return $this->hasMany(ServiceRequest::class, 'location_id');
     }
 }

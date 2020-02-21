@@ -55,13 +55,13 @@ class TechMngController extends Controller
 
     public function update_availability_status(Request $request) {
       $availability_status = $request->get('availability_status');
+      $tech_id = $request->get('tech_id');
 
       try {
-        $tech_id = Auth::guard('technician')->user()->id;
         $tech = UserTechnician::findOrFail($tech_id);
         $tech->availability_status = $availability_status;
         $tech->save();
-        
+
         return [
           'type' => 'success',
           'title' => 'Success',

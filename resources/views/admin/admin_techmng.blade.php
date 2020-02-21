@@ -276,7 +276,7 @@ $(document).ready(function() {
       },
       url: ' {{ url("admin/technician_management/update_availability_status") }} ',
       type: 'PUT',
-      data: { availability_status },
+      data: { availability_status, tech_id: currentTechId },
       success: function(res) {
         Swal.fire(
           res.title,

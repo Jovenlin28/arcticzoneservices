@@ -53,7 +53,32 @@ class ServiceFeesController extends Controller
      */
     public function store(Request $request)
     {
-        
+      $validator = Validator::make($request->all(), [
+        'service_fee' => 'required|numeric',
+        'service_type_id' => 'required|numeric',
+        'appliance_id' => 'required|numeric',
+      ]);
+  
+      if ($validator->fails()) {
+        return response()->json(array('errors' => $validator->getMessageBag()->toarray()));
+      } else {
+        try {
+          $service_fee = ServiceFee::create([
+            'fee' => $request['service_fee'],
+            'service_id' => $request['service_type_id'],
+            'appliance_id' => $request['appliance_id']
+          ]);
+  
+          return [
+            'type' => 'success',
+            'title' => 'Success',
+            'message' => "Service Fee information added successfully",
+            'service_fee' => $service_fee
+          ];
+        } catch (\Exception $e) {
+          return ['type' => 'error', 'title' => 'Error', 'message' => $e->getMessage()];
+        }
+      }
     }
 
     /**
@@ -87,7 +112,23 @@ class ServiceFeesController extends Controller
      */
     public function update(Request $request, $id)
     {
-       
+      $validator = Validator::make($request->all(), [
+        'service_fee' => 'required|numeric'
+      ]);
+
+      if ($validator->fails()) {
+        return response()->json(array('errors' => $validator->getMessageBag()->toarray()));
+      } else {
+        try {
+          ServiceFee::find($id)->update([
+            'fee' => $request['service_fee']
+          ]);
+
+          return ['type' => 'success', 'title' => 'Success message', 'message' => "Service Fee updated successfully"];
+        } catch (\Exception $e) {
+          return ['type' => 'error', 'title' => 'Error message', 'message' => $e->getMessage()];
+        }
+      }
     }
 
     /**
@@ -98,6 +139,7 @@ class ServiceFeesController extends Controller
      */
     public function destroy($id)
     {
-       
+      ServiceFee::findOrFail($id)->delete();
+      return response()->json(['message' => 'Deleted!']);
     }
 }

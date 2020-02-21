@@ -9,7 +9,9 @@ use App\Models\ServiceRequest;
 use App\Models\ServiceTimeslot;
 use App\Models\UnitType;
 use App\Models\UserClient;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ClientDashboardController extends Controller
 {
@@ -50,6 +52,54 @@ class ClientDashboardController extends Controller
             'client' => $client,
             'timeslots' => $timeslots
         ]);
+    }
+
+    public function cancel_service_request(Request $request) {
+      try {
+        $sr_id = $request->input('service_request_id');
+        $service_request = ServiceRequest::findOrFail($sr_id);
+        $service_request->status = 'cancelled';
+        $service_request->canceled_at = Carbon::now();
+        $service_request->save();
+
+        return response()->json([
+          'type' => 'success',
+          'title' => 'Success',
+          'message'   => 'Service Request has been successfully cancelled',
+        ]);
+      } catch (\Exception $e) {
+        return ['type' => 'error', 'title' => 'Error','message' => $e->getMessage()];
+      }
+    }
+
+    public function attach_receipt_payment(Request $request) {
+      $input = $request->all();
+      $validator = Validator::make($input, [
+        'file' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+      ]);
+
+      if ($validator->fails()) {
+        return response()->json(array('errors' => $validator->getMessageBag()));
+      }
+
+      try {
+        $image = $request->file('file');
+        $new_name = time() . '-' . $image->getClientOriginalName();
+        $image->move(public_path('uploads/receipt_payments'), $new_name);
+
+        $service_request = ServiceRequest::findOrFail($input['service_request_id']);
+        $service_request->receipt_payment_file = $new_name;
+        $service_request->save();
+
+        return response()->json([
+          'type' => 'success',
+          'title' => 'Success',
+          'message'   => 'Receipt Payment has been successfully uploaded',
+        ]);
+
+      } catch (\Exception $e) {
+        return ['type' => 'error', 'title' => 'Error','message' => $e->getMessage()];
+      }
     }
 
     private function groupByRequestStatus($client) {

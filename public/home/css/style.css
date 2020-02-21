@@ -58,6 +58,10 @@
     padding: 4rem 25rem;
 }
 
+input.daterangepicker {
+    width: 89%!important;
+}
+
 span.status,
 button.action {
     padding: 5px;
@@ -78,6 +82,10 @@ button.action {
 .datepicker {
     padding: 0!important;
     border: 1px solid gray;
+}
+
+.clockpicker-button {
+    color: black!important;
 }
 
 .date {

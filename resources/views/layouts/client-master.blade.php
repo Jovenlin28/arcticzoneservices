@@ -40,7 +40,14 @@
         <li class="dropdown notification-list">
           <a class="nav-link dropdown-toggle nav-user mr-0 waves-effect" data-toggle="dropdown" href="#" role="button"
             aria-haspopup="false" aria-expanded="false">
-            <img src="{{ asset('assets/images/default.png')}}" alt="user-image" class="rounded-circle">
+            <span class="photo-preview">
+              <img src="{{ Auth::user()->avatar === null ? 
+              asset('assets/images/default.png') : 
+              url('/uploads' . '/' . Auth::user()->avatar) }}" 
+                id="photo-preview"
+                class="rounded-circle avatar-lg img-thumbnail"
+                alt="profile-image">
+            </span>
             <span class="pro-user-name ml-1">
               {{ Auth::user()->client->firstname . ' ' . Auth::user()->client->lastname }}
               <i class="mdi mdi-chevron-down"></i>

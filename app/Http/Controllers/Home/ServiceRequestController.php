@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Appliance;
 use App\Models\Brand;
+use App\Models\ClientContactPerson;
 use App\Models\Location;
 use App\Models\PaymentMode;
 use App\Models\PropertyType;
@@ -16,6 +17,7 @@ use App\Models\ServiceType;
 use App\Models\UnitType;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ServiceRequestController extends Controller
 {
@@ -95,7 +97,18 @@ class ServiceRequestController extends Controller
 
         $input = $request->get('data');
 
-        $service_request = ServiceRequest::create([
+        if ($input['is_home_address'] === 'false') {
+          $validator = $this->initializeContactPersonValidation($input);
+        } else {
+          $validator = $this->initializeClientValidation($input);
+        }
+
+        if ($validator->fails()) {
+          return response()->json(array('errors' => $validator->getMessageBag()));
+        }
+
+        try {
+          $service_request = ServiceRequest::create([
             'client_id' => $input['client_id'],
             'service_type_id' =>  $input['service_type_id'],
             'location_id' => $input['location_id'],
@@ -108,16 +121,57 @@ class ServiceRequestController extends Controller
             'payment_mode_id' => $input['payment_mode_id'],
             'is_paid' => 0,
             'service_date' => date('Y-m-d', strtotime($input['service_date']))
-        ]);
+          ]);
 
-        $unit_details = [];
-        for($i = 0; $i < count($input['appliance_id']); $i++) {
-            $unit_details[$input['appliance_id'][$i]] = [
-                'brand_id' => $input['brand_id'][$i],
-                'unit_id' => $input['unit_id'][$i],
-            ];   
+          if ($input['is_home_address'] === 'false') {
+            $cl_contact_person = ClientContactPerson::create([
+              'firstname' => $input['contact_firstname'],
+              'lastname' => $input['contact_lastname'],
+              'contact_number' => $input['contact_mobile_number'],
+              'email' => $input['contact_email'],
+              'address' => $input['contact_address'],
+            ]);
+            $cl_contact_person->service_request()->save($service_request);
+          }
+
+          $unit_details = [];
+          for($i = 0; $i < count($input['appliance_id']); $i++) {
+              $unit_details[$input['appliance_id'][$i]] = [
+                  'brand_id' => $input['brand_id'][$i],
+                  'unit_id' => $input['unit_id'][$i],
+              ];   
+          }
+
+          $service_request->appliances()->attach($unit_details);
+
+          return response()->json([
+            'type' => 'success',
+            'title' => 'Success',
+            'message'   => 'Service Request has been successfully created',
+          ]);
+
+        } catch (\Exception $e) {
+          return ['type' => 'error', 'title' => 'Error','message' => $e->getMessage()];
         }
+    }
 
-        $service_request->appliances()->attach($unit_details);
+    private function initializeContactPersonValidation($input) {
+      return Validator::make($input, [
+        'contact_email' => 'required|email',
+        'contact_mobile_number' => 'required|numeric|digits:11',
+        'contact_firstname' => 'required|string',
+        'contact_lastname' => 'required|string',
+        'contact_address' => 'required|string',
+        'service_date' => 'required',
+        'timeslot_id' => 'required'
+      ]);
+    }
+
+    private function initializeClientValidation($input) {
+      return Validator::make($input, [
+        'service_address' => 'required|string',
+        'service_date' => 'required',
+        'timeslot_id' => 'required'
+      ]);
     }
 }

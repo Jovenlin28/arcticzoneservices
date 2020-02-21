@@ -48,7 +48,7 @@ class UnitTypeController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|unique:units,name,',
-            'fee' => 'required|string:units,fee'
+            'fee' => 'required|numeric'
         ]);
 
         if ($validator->fails()) {

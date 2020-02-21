@@ -46,7 +46,8 @@
 							<p class="mt-4"> <b> Appliances:</b> <br>
 								@foreach ($request['appliances'] as $appliance)
 								{{ $appliance['name'] }} ({{ $appliance['pivot']['qty'] }}) -
-								{{ $appliance['brand']['name'] . ' / ' . $appliance['unit']['name']}}
+                {{ $appliance['brand']['name'] . ' / ' . $appliance['unit']['name']}}
+                <br>
 								@endforeach
 							</p>
 

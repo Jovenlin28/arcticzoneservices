@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Faker\Provider\ar_SA\Payment;
 
 class ServiceRequest extends Model
 {
@@ -12,8 +13,8 @@ class ServiceRequest extends Model
 
     protected $fillable = [
         'client_id', 'service_type_id', 'location_id', 
-        'property_id', 'timeslot_id', 'service_address', 
-        'near_landmark', 'special_instruction', 'status',
+        'property_id', 'timeslot_id', 'client_contact_person_id', 
+        'service_address', 'near_landmark', 'special_instruction', 'status',
         'service_date', 'payment_mode_id', 'is_paid'
     ];
 
@@ -22,14 +23,22 @@ class ServiceRequest extends Model
     }
 
     public function appliances() {
-        return $this->belongsToMany(Appliance::class, 'service_request_appliances')
-        ->withPivot('brand_id', 'unit_id', 'qty');
+      return $this->belongsToMany(Appliance::class, 'service_request_appliances')
+      ->withPivot('brand_id', 'unit_id', 'qty');
     }
 
     public function technicians() {
-        return $this->belongsToMany(
-            UserTechnician::class, 'service_request_handles', 'service_request_id', 'tech_id'
-        );
+      return $this->belongsToMany(
+          UserTechnician::class, 'service_request_handles', 'service_request_id', 'tech_id'
+      );
+    }
+
+    public function client_contact_person() {
+      return $this->belongsTo(ClientContactPerson::class, 'client_contact_person_id');
+    }
+
+    public function user() {
+      return $this->hasOne(User::class, 'client_id');
     }
 
     public function workdone() {

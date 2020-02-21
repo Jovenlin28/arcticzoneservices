@@ -19,6 +19,39 @@ class ClientUpdateController extends Controller
         return view('client.client_update')->with(['user' => $user]);
     }
 
+    public function upload_photo(Request $request) {
+      $input = $request->all();
+      $validator = Validator::make($input, [
+        'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+      ]);
+
+      if ($validator->fails()) {
+        return response()->json(array('errors' => $validator->getMessageBag()));
+      }
+
+      try {
+        $image = $request->file('file');
+        $new_name = time() . '.' . $image->getClientOriginalExtension();
+        $image->move(public_path('uploads'), $new_name);
+
+        $user_id = Auth::user()->id;
+        $user = User::findOrFail($user_id);
+        $user->avatar = $new_name;
+        $user->save();
+
+        return response()->json([
+          'type' => 'success',
+          'title' => 'Success',
+          'message'   => 'Image has been successfully uploaded',
+          'uploaded_image' => '<img src="/uploads/'.$new_name.'" class="rounded-circle avatar-lg img-thumbnail"/>',
+          'class_name'  => 'alert-success'
+        ]);
+
+      } catch (\Exception $e) {
+        return ['type' => 'error', 'title' => 'Error','message' => $e->getMessage()];
+      }
+    }
+
     public function update(Request $request) {
       $input = $request->all();
 
