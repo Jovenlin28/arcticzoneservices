@@ -65,7 +65,9 @@
         <p class="text-danger"></p>
 
         <input required name="password" type="password" id="password" placeholder="Password">
+        <small class="text-muted">Must be 8 characters long.</small>
         <p class="text-danger"></p>
+        
 
         <input required name="password_confirmation" type="password" id="confirm-password"
           placeholder="Re-type Password">

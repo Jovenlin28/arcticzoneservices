@@ -58,8 +58,8 @@
   <div class="col-md-4">
     <div class="card">
       <div class="card-body">
-        <h4 class="header-title">Add Aircondition Unit Type</h4>
-        <p class="text-muted">New aircondition unit type for new service requests</p>
+        <h4 class="header-title">Add Bank Account</h4>
+        <p class="text-muted">New bank account for new service requests</p>
 
         <form id="addbank_form">
           @csrf

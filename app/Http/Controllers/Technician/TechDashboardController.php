@@ -17,6 +17,7 @@ class TechDashboardController extends Controller
     {
         $tech_id = Auth::guard('technician')->user()->id;
         $tech = UserTechnician::with([
+
             'service_requests.client',
             'service_requests.service_type',
             'service_requests.property',
@@ -24,7 +25,8 @@ class TechDashboardController extends Controller
             'service_requests.timeslot',
             'service_requests.appliances',
             'service_requests.workdone',
-            'service_requests.remarks'
+            'service_requests.remarks',
+            'service_requests.client_contact_person'
         ])->find($tech_id)->toArray();
 
         foreach($tech['service_requests'] as &$service_request) {

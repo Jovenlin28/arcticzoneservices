@@ -25,25 +25,15 @@
 
                 <div class="row">
                     <div class="col-md-6  text-center">
-                        <img class="mt-5" src="{{ asset ('assets/images/maintenance.svg') }}" width="200" alt="error-image"/>
-                        <h4 class="mt-4">Backup and Restore Files</h4>
-                        <p class="text-muted">Back up your files and restore them if the originals are lost, damaged or deleted. <br>Input your credentials to export your database.</p>
+                        <img class="mt-5" src="{{ asset ('assets/images/maintenance.svg') }}" width="500" height="200"alt="error-image"/>
+                        
                     </div>
 
                     <div class="col-md-5">
-                        <h4 class="mt-5">Administration Credentials</h4>
-                        <br>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Username</label>
-                            <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter your username">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Password</label>
-                            <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter your password">
-                        </div>
-                        
-                        <button type="button" class="btn btn-primary btn-md">Submit</button>
+                      <br><br>
+                      <h2 class="mt-4">BackUp and Restore Files</h2>
+                      <h5 class="text-muted">Backing up files can protect against accidental loss of user data, database corruption, hardware failures, and even natural disasters. It's your job as an administrator to make sure that backups are performed. </h5> <br>
+                      <button type="button" class="btn btn-primary btn-lg">BackUp and Restore Data Now</button>
                     </div>
                 </div>
 

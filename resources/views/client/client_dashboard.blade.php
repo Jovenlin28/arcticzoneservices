@@ -103,7 +103,7 @@
                     <hr>
                     <div class="row">
                       <div class="col-md-6">
-                        SR00{{ $request['id'] }}
+                        SR{{ $request['id'] }}
                       </div>
                       <div class="col-md-6">
                         {{ $request['service_date'] }}
@@ -137,7 +137,7 @@
                     <div class="row">
                       <div class="col-md-3">
                         <p class="text-muted">Service ID</p>
-                        <p>SR00{{ $request['id'] }}</p>
+                        <p>SR{{ $request['id'] }}</p>
                       </div>
                       <div class="col-md-3">
                         <p class="text-muted">Status</p>
@@ -145,14 +145,14 @@
                       </div>
                       <div class="col-md-3">
                         <p class="text-muted">Submitted Date</p>
-                        <p> {{ $request['service_date'] }}</p>
+                        <p> {{ date('F d, Y', strtotime($request['created_at'])) }} </p>
                       </div>
                       <div class="col-md-3">
                         <p class="text-muted">Service Date</p>
                         <p>
                           {{ date('g:iA', strtotime($request['timeslot']['start'])) }} -
                           {{ date('g:iA', strtotime($request['timeslot']['end'])) }}
-                          <br> {{ date('M d, Y', strtotime($request['service_date'])) }}
+                          <br> {{ date('F d, Y', strtotime($request['service_date'])) }}
                         </p>
                       </div>
 
@@ -226,7 +226,7 @@
                       @if ($category === 'completed')
                       <div class="col-md-6">
                         <p class="text-muted">Date and Time Completed</p>
-                        <p>{{ date('g:i A M d, Y', strtotime($request['completed_at'])) }}</p>
+                        <p>{{ date('g:i A F d, Y', strtotime($request['completed_at'])) }}</p>
                       </div>
                       @endif
                     </div>

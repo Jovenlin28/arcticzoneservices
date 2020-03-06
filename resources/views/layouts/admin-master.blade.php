@@ -47,7 +47,7 @@
 
 </head>
 
-<body>
+<body class="left-side-menu-light">
   <!-- Begin page -->
   <div id="wrapper">
     <!-- Topbar Start -->
@@ -204,29 +204,53 @@
 
       </ul>
 
-      <!-- LOGO -->
-      <div class="logo-box">
-        <a href="index.html" class="logo text-center">
+      <div class="logo-box" style="background-color: white;">
+        <a href="/tech/home" class="logo text-center">
           <span class="logo-lg">
-            <img src="{{ asset('assets/images/arctic-zone-logo-home.png')}}" height="70" width="170">
-            <!-- <span class="logo-lg-text-light">Xeria</span> -->
-          </span>
-          <span class="logo-sm">
-            <!-- <span class="logo-sm-text-dark">X</span> -->
-            <img src="assets/images/logo-sm.png" alt="" height="18">
+            <img src="{{ asset('assets/images/arctic-zone-logo.png')}}" alt="" height="53" width="150">
           </span>
         </a>
       </div>
 
       <ul class="list-unstyled topnav-menu topnav-menu-left m-0">
-        <li>
-          <button class="button-menu-mobile waves-effect">
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
+
+        <li class="dropdown d-none d-lg-block">
+          <a class="nav-link  waves-effect"  href="/admin/dashboard" role="button"
+            aria-haspopup="false" aria-expanded="false">
+            Dashboard
+          </a>
         </li>
 
+        <li class="dropdown d-none d-lg-block">
+          <a class="nav-link dropdown-toggle waves-effect" data-toggle="dropdown" href="#" role="button"
+            aria-haspopup="false" aria-expanded="false">
+            Services
+            <i class="mdi mdi-chevron-down"></i>
+          </a>
+          <div class="dropdown-menu">
+            <!-- item-->
+            <a href="/admin/services" class="dropdown-item">
+              Service Requests
+            </a>
+
+            <!-- item-->
+            <a href="/admin/services/service_history" class="dropdown-item">
+              Service History
+            </a>
+          </div>
+        </li>
+
+        <li class="dropdown d-none d-lg-block">
+          <a class="nav-link  waves-effect"  href="/admin/technician_management" role="button"
+            aria-haspopup="false" aria-expanded="false">
+            Technician
+          </a>
+        </li>
+
+       
+
+
+       
         <li class="dropdown d-none d-lg-block">
           <a class="nav-link dropdown-toggle waves-effect" data-toggle="dropdown" href="#" role="button"
             aria-haspopup="false" aria-expanded="false">
@@ -304,112 +328,45 @@
               Bank Account Details
             </a>
 
+             <!-- item-->
+            <a href="/admin/maintenance/horse_power" class="dropdown-item">
+              Horse Power
+            </a>
+
+             <!-- item-->
+            <a href="/admin/maintenance/horse_power_fees" class="dropdown-item">
+              Horse Power Fees
+            </a>
+
           </div>
+        </li>
+
+
+        <li class="dropdown d-none d-lg-block">
+          <a class="nav-link  waves-effect"  href="/admin/back_up_and_restore" role="button"
+            aria-haspopup="false" aria-expanded="false">
+            Configurations
+          </a>
         </li>
       </ul>
     </div>
     <!-- end Topbar -->
 
-    <!-- ========== Left Sidebar Start ========== -->
-    <div class="left-side-menu">
-
-      <div class="slimscroll-menu">
-
-        <!--- Sidemenu -->
-        <div id="sidebar-menu">
-
-          <ul class="metismenu" id="side-menu">
-
-            <li class="menu-title">Navigation</li>
-
-            <li>
-              <a href="/admin/dashboard">
-                <i class="la la-dashboard"></i>
-
-                <span> Dashboard </span>
-              </a>
-
-            </li>
-
-            <li>
-              <a href="javascript: void(0);">
-                <i class="la la-archive"></i>
-                <span> Services </span>
-                <span class="menu-arrow"></span>
-              </a>
-              <ul class="nav-second-level" aria-expanded="false">
-                <li>
-                  <a href="/admin/services">Service Requests</a>
-                </li>
-                <li>
-                  <a href="/admin/services/service_history">Service History</a>
-                </li>
-              </ul>
-            </li>
 
 
-            <li>
-              <a href="/admin/technician_management">
-                <i class="la la-male"></i>
-                <span> Technician </span>
+    <div class="content">
+      <div class="container">
+        
+        <br><br><br><br>
+        @yield('content')
 
-              </a>
 
-            </li>
-
-            <li>
-              <a href="/admin/back_up_and_restore">
-                <i class="la la-chain"></i>
-                <span> Back Up and Restore </span>
-
-              </a>
-
-            </li>
-
-          </ul>
-
-        </div>
-        <!-- End Sidebar -->
-
-        <div class="clearfix"></div>
-
-      </div>
-      <!-- Sidebar -left -->
-
-    </div>
-    <!-- Left Sidebar End -->
-
-    <div class="content-page">
-      <div class="content">
-        <!-- Start Content-->
-        <div class="container-fluid">
-          @yield('content')
-        </div>
       </div>
     </div>
+  
 
-    <!-- Footer Start -->
-    <footer class="footer">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-6">
-            2019 &copy; Arctic Zone Thermo Solutions Inc.
-          </div>
-
-        </div>
-      </div>
-    </footer>
-    <!-- end Footer -->
-
-  </div>
-
-  <!-- ============================================================== -->
-  <!-- End Page content -->
-  <!-- ============================================================== -->
-
-
-  </div>
-  <!-- END wrapper -->
+  
+  
 
   <!-- Vendor js -->
   <script src="{{ asset ('assets/js/vendor.min.js') }}"></script>

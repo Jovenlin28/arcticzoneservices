@@ -54,6 +54,7 @@
                     <div class="form-group">
                       <label><b>Service City</b></label>
                       <select name="location_id" class="form-control" width="200%">
+                        <option>- Select your service type -</option>
                         @foreach ($locations as $location)
                         <option value="{{ $location->id }}">
                           {{ $location->name }}
@@ -66,6 +67,7 @@
                     <div class="form-group">
                       <label><b>Property Type</b></label>
                       <select name="property_type_id" class="form-control">
+                        <option>- Select your property type -</option>
                         @foreach ($property_types as $property_type)
                         <option value="{{ $property_type->id }}">
                           {{ $property_type->name }}
@@ -466,6 +468,10 @@
       //show back button
       $('#back_btn').attr('style', 'display: block');
 
+      if (activeStep === 3) {
+        filter_appliance_options();
+      }
+
       if (activeStep === 5) {
         $('.copy').remove();
         displayUnitDetailsRow();
@@ -558,7 +564,17 @@
                 res.message,
                 res.type
               ).then(() => {
-                window.location = ' {{url("voucher")}} ';
+                Swal.fire({
+                  title: 'Go to voucher page',
+                  text: "Are you sure you want to redirect to voucher page",
+                  type: "primary",
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Ok'
+                }).then((result) => {
+                  window.location = ' {{url("voucher")}} ';
+                });
               });
             }
           },
@@ -591,6 +607,24 @@
       $('.' + step).fadeOut();
   }
 
+  function filter_appliance_options() {
+    const $checked_service_type = 'input[name="service_type_id"]:checked';
+    const service_type_id = +$($checked_service_type).val();
+    const service_type_name = $($checked_service_type).parent().text().trim();
+    if (service_type_name !== 'Repair') {
+      $('div#repair_problems_selection').remove();
+    }
+    const appliance_ids = serviceFees.filter(s => {
+      return s.service_id === service_type_id;
+    }).map(service_fee => service_fee.appliance_id);
+
+
+    $('select[name="appliance_id"] option.non_default')
+      .filter(function( index, elem ) {
+        return !appliance_ids.includes(+elem.value);
+      }).remove();
+  }
+
   function initServiceFees() {
     $.get("{{ url('pricing/get-service-fees') }}", function(data) {
       serviceFees = data;
@@ -598,7 +632,7 @@
   }
 
   function transformData(input) {
-      const arrayData = ['appliance_id', 'brand_id', 'unit_id'];
+      const arrayData = ['appliance_id', 'brand_id', 'unit_id', 'trouble_id'];
       return input.reduce((acc, item) => {
           if (arrayData.includes(item.name)) {
               if (!acc[item.name]) {
@@ -624,7 +658,6 @@
     totalPayment = 0;
 
     const service_type_id = +$('input[name="service_type_id"]:checked').val();
-    console.log(serviceFees);
 
     $.each($appliances, function(index, elem) {
       let fee;

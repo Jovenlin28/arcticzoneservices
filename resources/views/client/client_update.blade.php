@@ -112,7 +112,7 @@
                     <div class="form-group">
                       <label for="address">Address</label>
                       <input required type="text" name="address" value="{{$user->client->address}}" class="form-control"
-                        id="address" placeholder="Enter email"></textarea>
+                        id="address" placeholder="Enter address"></textarea>
                       <p class="text-danger"></p>
                     </div>
                   </div> <!-- end col -->

@@ -92,18 +92,18 @@
         <td align="center">2</td>
         <td>Installation;
           Window (2) Non-inverter / Samsung Inverter / Koppel</td>
-        <td align="right">{{ $client['total_amount'] }}.00</td>
-        <td align="right">{{ $client['total_amount'] }}.00</td>
+        <td align="right">{{ number_format($client['total_amount'], 2) }}</td>
+        <td align="right">{{ number_format($client['total_amount'], 2) }}</td>
       </tr>
     </tbody>
 
 
     <p align="right">
       @if ($client['service_requests'][0]['payment_mode']['name']  !== 'Full Payment')
-        <b>Downpayment:</b> {{ $client['total_amount'] / 2 }} <br>
+        <b>Downpayment:</b> {{ number_format($client['total_amount'] / 2, 2) }} <br>
       @endif
       
-      <b>Grand Total Amount:</b> <u> {{ $client['total_amount'] }}.00</u>
+      <b>Grand Total Amount:</b> <u> {{ number_format($client['total_amount'], 2) }}</u>
     </p>
 
   </table>

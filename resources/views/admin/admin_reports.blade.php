@@ -27,15 +27,15 @@
       <p>All Summary Service Requested Report</p>
 
 
-      <div class="form-group mb-3">
+      <div class="form-group mb-2">
         <input type="text"
-          class="form-control daterangepicker" 
+          class="form-control" 
           id="service_requests_report"
           data-toggle="date-picker" 
           placeholder="Select Date Ranges"
           data-cancel-class="btn-warning">
       </div>
-      <br><br>
+   
 
       <a data-url="/admin/generate_reports/service_requests_report" 
         id="service_requests_report"
@@ -51,15 +51,15 @@
       <h4 class="header-title mt-0 mb-2">Service Status Report</h4>
       <p>All Summary Status of Services Report</p>
 
-      <div class="form-group mb-3">
+      <div class="form-group mb-2">
         <input type="text"
-          class="form-control daterangepicker" 
+          class="form-control" 
+
           id="service_requests_status_report"
           data-toggle="date-picker" 
           placeholder="Select Date Ranges"
           data-cancel-class="btn-warning">
       </div>
-      <br><br>
 
       <a data-url="/admin/generate_reports/service_requests_status_report" 
         id="service_requests_status_report"
@@ -76,7 +76,6 @@
       <h4 class="header-title mt-0 mb-2">Technician Service Job Report</h4>
       <p>Total Finished Job of Technician Report </p>
 
-      <br><br>
       <div class="form-group">
         <label>Select Technician</label>
         <select name="select_technician" class="form-control">
@@ -87,15 +86,18 @@
           @endforeach
         </select>
       </div>
+     
 
       <div class="form-group mb-3">
         <input type="text"
-          class="form-control daterangepicker" 
+          class="form-control" 
           id="technician_service_jobs"
           data-toggle="date-picker" 
           placeholder="Select Date Ranges"
           data-cancel-class="btn-warning">
       </div>
+
+      
 
       <a data-url="/admin/generate_reports/technician_service_jobs_report"
         id="technician_service_jobs" 
@@ -103,6 +105,8 @@
         href="#">
         <button type="button" class="btn btn-md btn-primary btn-block">Generate</button>
       </a>
+
+      
 
     </div>
   </div>
@@ -114,10 +118,10 @@
 @push('scripts');
 <script type="text/javascript">
   $(document).ready(function(){
-    $('.daterangepicker').daterangepicker({
+    $('input#service_requests_status_report, input#service_requests_report, input#technician_service_jobs').daterangepicker({
       locale: {
         format: 'YYYY-MM-DD'
-      },
+      }
     });
 
     $('a.generate').on('click', function(){

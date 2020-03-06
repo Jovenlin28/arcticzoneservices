@@ -67,12 +67,12 @@
       @foreach ($service_requests as $service_request)
         <tr class="tr-pp">
           <td>{{ $service_request['id'] }}</td>
-          <td>{{ $service_request['service_date'] }}</td>
+          <td>{{ date('F d y', strtotime($sr['service_date'])) }}</td>
           <td>{{ $service_request['client']['firstname'] . ' ' . $service_request['client']['lastname'] }}</td>
           <td>{{ $service_request['service_address'] }}</td>
           <td>{{ $service_request['client']['contact_number'] }}</td>
           <td>Cleaning Window (2) Non-inverter (1) Inverter (1) Samsung (1) Koppel (1)</td>
-          <td>{{ $service_request['total_amount'] }}</td>
+          <td>{{ number_format($service_request['total_amount'], 2) }}</td>
         </tr>
       @endforeach
       

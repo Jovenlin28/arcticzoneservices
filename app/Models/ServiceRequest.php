@@ -27,6 +27,12 @@ class ServiceRequest extends Model
       ->withPivot('brand_id', 'unit_id', 'qty');
     }
 
+    public function troubles() {
+      return $this->belongsToMany(
+        RepairIssue::class, 'service_request_troubles', 'service_request_id', 'trouble_id'
+      );
+    }
+
     public function technicians() {
       return $this->belongsToMany(
           UserTechnician::class, 'service_request_handles', 'service_request_id', 'tech_id'

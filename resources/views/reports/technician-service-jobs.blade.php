@@ -74,10 +74,10 @@
         <td>{{ $sr['id'] }}</td>
         <td>{{ $sr['service_type']['name'] }}</td>
         <td>{{ $sr['client']['firstname'] . ' ' . $sr['client']['lastname'] }}</td>
-        <td>{{ date('m/d/y', strtotime($sr['service_date'])) }}</td>
+        <td>{{ date('F d, Y', strtotime($sr['service_date'])) }}</td>
         <td>
           @if ($sr['status'] === 'completed')
-          {{ date('m/d/y', strtotime($sr['completed_at'])) }}
+          {{ date('F d, Y', strtotime($sr['completed_at'])) }}
           @endif
         </td>
         <td>

@@ -75,7 +75,7 @@
               <br>
           @endforeach
         </td>
-        <td> {{ date('M d y', strtotime($sr['service_date'])) }} <br>
+        <td> {{ date('F d y', strtotime($sr['service_date'])) }} <br>
           {{ date('g:iA', strtotime($sr['timeslot']['start'])) }} - 
           {{ date('g:iA', strtotime($sr['timeslot']['end'])) }}
         </td>

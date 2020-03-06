@@ -8,6 +8,9 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Arctic Zone Thermo Solutions Inc. </title>
 
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
+
 
   <!--  Bootstrap css file  -->
   <link rel="stylesheet" href="{{ asset('home/css/bootstrap.min.css')}}">

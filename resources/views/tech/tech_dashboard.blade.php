@@ -36,11 +36,18 @@
 				<div class="card-body">
 					<div class="row">
 						<div class="col-md-7">
-							<p> <b> CL{{ $request['client']['id'] }} -
-									{{ $request['client']['firstname'] . ' ' . $request['client']['lastname'] }}</b> <br>
-								{{ $request['location']['name'] }} ; Company <br>
-								{{ $request['client']['address'] }} <br>
-								{{ $request['client']['contact_number'] }}
+							<p> 
+                @if ($request['client_contact_person'] === null) 
+                  <b> {{ $request['client']['firstname'] . ' ' . $request['client']['lastname'] }} </b> <br>
+                  {{ $request['location']['name'] }} ; Company <br>
+                  {{ $request['client']['address'] }} <br>
+                  {{ $request['client']['contact_number'] }}
+                @else
+                  <b> {{ $request['client_contact_person']['firstname'] . ' ' . $request['client_contact_person']['lastname'] }} </b> <br>
+                  {{ $request['location']['name'] }} ; Company <br>
+                  {{ $request['client_contact_person']['address'] }} <br>
+                  {{ $request['client_contact_person']['contact_number'] }}
+                @endif
 							</p>
 
 							<p class="mt-4"> <b> Appliances:</b> <br>
@@ -59,7 +66,7 @@
 
 						<div class="col-md-5">
 							<p> <b> Service Time and Date:</b> <br>
-								{{ date('M d, Y', strtotime($request['service_date'])) }} /
+								{{ date('F d, Y', strtotime($request['service_date'])) }} /
                 {{ date('h:i A', strtotime($request['timeslot']['start'])) }} - 
                 {{ date('h:i A', strtotime($request['timeslot']['end'])) }}
 							</p>
@@ -78,8 +85,7 @@
                 <button class="finish-service btn btn-danger btn-md float-right" 
                 data-request-id="{{ $request['id'] }}"
                 data-toggle="modal" 
-                data-target="#FinishService">Finish
-                Service</button>
+                data-target="#FinishService">Remarks</button>
               @else
                   <span class="badge badge-success status float-right">Waiting for approval</span>
               @endif
@@ -111,26 +117,19 @@
 		@if ($request['status'] === 'completed' && count($request['remarks']) === 2)
 		<div class="card">
 			<div class="card-header bg-success py-3 text-white">
+        
 				<div class="card-widgets">
 					<a data-toggle="collapse" href="#rq-completed{{ $request['id'] }}" role="button" aria-expanded="false"
 						aria-controls="cardCollpase2">
 						<i class="mdi mdi-minus"></i></a>
-				</div>
+        </div>
 
 				<h5 class="card-title mb-0 text-white">SR{{ $request['id'] }} - Cleaning</h5>
 			</div>
 
 			<div id="rq-completed{{ $request['id'] }}" class="collapse show">
 				<div class="card-body">
-					<p> <strong>Work Done:</strong> <br>
-						@if ($request['workdone'][0]['pivot']['technician_id'] === $tech_id)
-              {{ $request['workdone'][0]['name'] }}
-            @else
-              {{ $request['workdone'][1]['name'] }}
-            @endif
-					</p>
-
-					<p class="mt-4"> <strong>Remarks:</strong> <br>
+					<p class=""> <strong>Remarks:</strong> <br>
 						@if ($request['remarks'][0]['technician_id'] === $tech_id)
               {{ $request['remarks'][0]['name'] }}
             @else
@@ -159,27 +158,16 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title text-danger" id="myModalLabel">Finish Service</h4>
+				<h4 class="modal-title text-danger" id="myModalLabel">Remarks</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			</div>
 			<div class="modal-body">
-
-				<label>Work Done:</label>
-				<select id="workdone-id" name="workdone_id" class="form-control">
-					@foreach ($workdone as $work)
-					<option value="{{ $work['id'] }}">{{ $work['name'] }}</option>
-					@endforeach
-				</select>
-
-				<br>
-
 				<label>Please enter your remarks:</label>
 				<textarea id="remarks" name="remarks" class="form-control" rows="5"></textarea>
 
 			</div>
 			<div class="modal-footer">
-				<button type="button" id="finish-service" class="btn btn-danger waves-effect waves-light">Finish
-					Service</button>
+				<button type="button" id="finish-service" class="btn btn-danger waves-effect waves-light">Send Remarks</button>
 			</div>
 		</div>
 	</div>
@@ -197,7 +185,7 @@
 
 		$('button#finish-service').on('click', function(){
 			const submitBtn = $(this);
-			const workdone_id = $('select#workdone-id').val();
+			// const workdone_id = $('select#workdone-id').val();
 			const remarks = $('textarea#remarks').val();
 
 			submitBtn.prop('disabled', true);
@@ -208,7 +196,7 @@
 						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 				},
 				type: 'POST',
-				data: {service_request_id, remarks, workdone_id},
+				data: {service_request_id, remarks},
 				success: function(data) {
 					submitBtn.prop('disabled', false);
 					if (data.type) {

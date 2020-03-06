@@ -8,31 +8,46 @@ use App\Models\Location;
 use App\Models\ServiceRequest;
 use App\Models\UserTechnician;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
 
     public function index() 
     {
-      $service_requests = ServiceRequest::with([
-        'client', 'property', 'timeslot', 'location', 'appliances.service_fees',
-        'service_type', 'technicians.tech_info'
-      ])->get()->toArray();
 
-      $locations = Location::withCount([
-        'service_requests'
-      ])->get()->toArray();
+      $service_requests = ServiceRequest::all()->toArray();
+      $technicians = UserTechnician::all()->toArray(); 
+      
+      $count_group = [
+        'properties' => DB::table('property_types')->count(),
+        'locations' => DB::table('locations')->count(),
+        'service_types' => DB::table('service_types')->count(),
+        'appliances' => DB::table('appliances')->count(),
+        'units' => DB::table('units')->count(),
+        'service_requests' => count($service_requests),
+        'technicians' => count($technicians)
+      ];
 
-      $technicians = UserTechnician::with('tech_info')->withCount([
-        'service_requests'
-      ])->get()->toArray();
+      $tech_group_by = [
+        'available' => 0,
+        'unavailable' => 0
+      ];
 
+      foreach($technicians as $tech) {
+        if ($tech['availability_status'] === 1) {
+          $tech_group_by['available'] += 1;
+        } else {
+          $tech_group_by['unavailable'] += 1;
+        }
+      }
+      
       $status_group = [
         'new' => 0,
         'assigned' => 0,
         'closed' => 0,
         'cancelled' => 0,
-        'on_going' => 0
+        'on_going' => 0,
       ];
 
       foreach($service_requests as &$sr) {
@@ -46,32 +61,20 @@ class DashboardController extends Controller
           }
           
         } else if ($sr['status'] === 'completed') {
-          $status_group['cloed'] += 1;
+          $status_group['closed'] += 1;
         } else {
           $status_group['cancelled'] += 1;
         }
-        $this->set_service_request_total_amount($sr);
       }
 
       // echo "<pre>";
-      // print_r($service_requests);
+      // print_r($technicians);
       // die();
 
       return view('admin.admin_dashboard', compact([
-        'service_requests', 'status_group', 'locations', 'technicians'
+        'status_group', 
+        'count_group', 
+        'tech_group_by'
       ]));
-    }
-
-    private function set_service_request_total_amount(&$sr) {
-      $sr['total_amount'] = 0;
-      foreach($sr['appliances'] as $appliance) {
-          $found = array_filter($appliance['service_fees'], function($service_fee) use($sr, $appliance){
-          return $service_fee['appliance_id'] === $appliance['id'] && 
-          $service_fee['service_id'] === $sr['service_type_id'];
-        });
-        if (count($found) > 0) {
-          $sr['total_amount'] += array_values($found)[0]['fee'];
-        } 
-      }
     }
 }

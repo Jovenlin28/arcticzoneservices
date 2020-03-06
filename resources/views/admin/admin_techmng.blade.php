@@ -49,7 +49,7 @@
           <tbody>
             @foreach ($technicians as $tech)
               <tr id="{{$tech['id']}}">
-                <td>TC{{ $tech['id'] }}</td>
+                <td>TECH{{ $tech['id'] }}</td>
                 <td>{{ $tech['tech_info']['firstname'] . ' ' . $tech['tech_info']['lastname'] }}</td>
                 <td>{{ $tech['username'] }}</td>
                 <td>{{ $tech['tech_info']['contact_number'] }}</td>

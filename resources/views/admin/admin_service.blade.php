@@ -19,19 +19,21 @@
 
 <div class="row">
   <div class="col-md-12">
+    @foreach ($service_requests_group as $service_type => $service_requests)
     <div class="card">
       <div class="card-body">
 
-        <h4 class="header-title">Service Requested</h4>
+        <h4 class="header-title">Service Requested ({{ ucfirst($service_type) }})</h4>
         <p class="text-muted font-13 mb-4">
           List of all service request.
         </p>
 
-        <table id="basic-datatable" class="table dt-responsive nowrap">
+        <table class="table dt-responsive nowrap datatable">
           <thead>
             <tr>
               <th>SRID</th>
               <th>Requested By</th>
+            
               <th>Property</th>
               <th>Date and Time</th>
               <th>Assigned Tech/s</th>
@@ -50,9 +52,15 @@
                   {{ $service_request['id'] }}
                 </a>
               </td>
-              <td>{{ $service_request['client']['firstname'] . ' ' . $service_request['client']['lastname'] }}</td>
+              <td>
+                @if ($service_request['client_contact_person'] === null) 
+                {{ $service_request['client']['firstname'] . ' ' . $service_request['client']['lastname'] }}
+                @else
+                {{ $service_request['client_contact_person']['firstname'] . ' ' . $service_request['client_contact_person']['lastname'] }} 
+                @endif
+              </td>
               <td>{{ $service_request['property']['name'] }}</td>
-              <td>{{ date('M d, Y', strtotime($service_request['service_date'])) }}
+              <td>{{ date('F d, Y', strtotime($service_request['service_date'])) }}
                 {{ date('h:i A', strtotime($service_request['timeslot']['start'])) }} -
                 {{ date('h:i A', strtotime($service_request['timeslot']['end'])) }}</td>
               <td>
@@ -63,45 +71,34 @@
 
               <td>
                 @if ($service_request['status'] === 'new')
-                  <span class="badge badge-primary status">
-                    New
-                  </span>
-
-                  @if ($service_request['is_paid'])
-                  <span class="badge badge-success status">
-                    Paid
-                  </span>
+                <button type="button" class="btn btn-outline-secondary waves-effect waves-light">
+                  @if (!$service_request['is_paid'])
+                    <span>Waiting for payment</span>
                   @else
-                  <span class="badge badge-danger status">
-                    Not yet paid
-                  </span>
-                  @endif
+                    <span>Waiting for assignment</span>
+                  @endif   
+                </button>
                 @endif
 
                 @if ($service_request['status'] === 'pending')
                   @if (\Carbon\Carbon::now()->gte(\Carbon\Carbon::parse($service_request['service_date'])))
-                  <span class="badge badge-warning status">
-                    On Going
-                  </span>
+                  <button type="button" class="btn btn-outline-warning waves-effect waves-light">On-going Request</button>
                   @else
-                  <span class="badge badge-warning status">
-                    Pending
-                  </span>       
+                  <button class="btn btn-outline-warning waves-effect waves-light">
+                    Pending Request
+                  </button>       
                   @endif
                 @endif
 
                 @if ($service_request['status'] === 'cancelled')
-                  <span class="badge badge-danger status">
-                    Cancelled
-                  </span>
+                <button type="button" class="btn btn-outline-danger waves-effect waves-light">Cancelled Request</button>
                 @endif
 
                 @if ($service_request['status'] === 'completed')
-                  @if (count($service_request['remarks']) === 2)
-                    <span class="badge badge-success status">
-                      Completed
-                    </span>
-                  @endif
+                  {{-- @if (count($service_request['remarks']) === 2)
+                  <button type="button" class="btn btn-outline-success waves-effect waves-light">Completed Request</button>
+                  @endif --}}
+                  <button type="button" class="btn btn-outline-success waves-effect waves-light">Completed Request</button>
                 @endif
                 
               </td>
@@ -110,17 +107,15 @@
                   <button data-toggle="modal"
                     data-service-request-id="{{ $service_request['id'] }}"
                     data-target="#assign-tech" 
-                    class="btn btn-primary btn-xs action on-assign-tech">Assign Tech</button>
+                    class="btn btn-primary btn-xs action on-assign-tech">Assign</button>
                 @endif
 
-                @if ($service_request['status'] !== 'completed' && count($service_request['remarks']) === 2)
+                @if ($service_request['status'] === 'pending' && \Carbon\Carbon::now()->gte(\Carbon\Carbon::parse($service_request['service_date'])))
                   <button data-service-request-id="{{ $service_request['id'] }}"
                     class="btn btn-warning btn-xs action complete-service-request">
-                    Close
+                    Complete Request
                   </button>
                 @endif
-
-                
               </td>
             </tr>
             @endforeach
@@ -130,6 +125,8 @@
 
       </div>
     </div>
+    @endforeach
+    
   </div>
 </div>
 

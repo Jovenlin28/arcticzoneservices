@@ -179,6 +179,49 @@
     }
 
     $(document).ready(function(){
+      $('#addservice_form').on('submit', function(e) {
+            var self = this;
+            e.preventDefault();
+
+            $.ajax({
+                url: "/admin/maintenance/service_types",
+                method: "POST",
+                context: document.body,
+                data: new FormData(this),
+                contentType: false, // nakalimutan mo hehe
+                global: false,
+                cache: false,
+                processData: false,
+                success: function (data) {
+                    // validation message
+                    if (data.errors) {
+                        if (data.errors.name) {
+                            display_errors(data.errors.name,'#name','#service_name_error');
+                        } else {
+                            eliminate_errors('#name', '#service_name_error');
+                        }
+
+                        return;
+                    }
+
+                    if (data.type) {
+                        // sweetalert rep.
+                        Swal.fire(data.title, data.message, data.type)
+                            .then((result) => {
+                                if (data.type == 'success') {
+                                    addRow(data.service);
+                                }
+                            });
+                    } else {
+                        // error message
+                    }
+                },
+                error: function(data){
+                    //
+                }
+            });
+        });
+        
         $('#service_form').on('submit', function(e) {
             e.preventDefault();
             var id = $('#id').val();
@@ -241,50 +284,6 @@
         $('#editModal').modal('show');
     }
 
-    $(document).ready(function(){
-        $('#addservice_form').on('submit', function(e) {
-            var self = this;
-            e.preventDefault();
-
-            $.ajax({
-                url: "/admin/maintenance/service_types",
-                method: "POST",
-                context: document.body,
-                data: new FormData(this),
-                contentType: false, // nakalimutan mo hehe
-                global: false,
-                cache: false,
-                processData: false,
-                success: function (data) {
-                    // validation message
-                    if (data.errors) {
-                        if (data.errors.name) {
-                            display_errors(data.errors.name,'#name','#service_name_error');
-                        } else {
-                            eliminate_errors('#name', '#service_name_error');
-                        }
-
-                        return;
-                    }
-
-                    if (data.type) {
-                        // sweetalert rep.
-                        Swal.fire(data.title, data.message, data.type)
-                            .then((result) => {
-                                if (data.type == 'success') {
-                                    addRow(data.service);
-                                }
-                            });
-                    } else {
-                        // error message
-                    }
-                },
-                error: function(data){
-                    //
-                }
-            });
-        });
-    });
 </script>
 
 @endpush

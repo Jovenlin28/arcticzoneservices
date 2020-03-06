@@ -11,6 +11,7 @@ use App\Models\Location;
 use App\Models\PaymentMode;
 use App\Models\PropertyType;
 use App\Models\Remarks;
+use App\Models\RepairIssue;
 use App\Models\ServiceRequest;
 use App\Models\ServiceTimeslot;
 use App\Models\ServiceType;
@@ -32,6 +33,7 @@ class ServiceRequestController extends Controller
         $appliances = Appliance::all();
         $timeslots = ServiceTimeslot::all();
         $payment_modes = PaymentMode::all();
+        $troubles = RepairIssue::all();
 
         // echo "<pre>";
         // print_r($service_types->service_fees->toArray());
@@ -44,7 +46,8 @@ class ServiceRequestController extends Controller
             'units' => $units,
             'appliances' => $appliances,
             'timeslots' => $timeslots,
-            'payment_modes' => $payment_modes
+            'payment_modes' => $payment_modes,
+            'troubles' => $troubles
         ]);
     }
 
@@ -69,16 +72,19 @@ class ServiceRequestController extends Controller
 
     public function finish_service_request(Request $request) {
         $input = $request->all();
+        $tech_id = Auth::guard('technician')->user()->id;
 
         try {
             $remarks = new Remarks([
               'name' => $input['remarks'],
-              'technician_id' => Auth::guard('technician')->user()->id
+              'technician_id' => $tech_id
             ]);
             $service_request = ServiceRequest::findOrFail($input['service_request_id']);
             $service_request->remarks()->save($remarks);
 
-            $service_request->workdone()->attach($input['workdone_id']);
+            // $service_request->workdone()->attach([
+            //   $input['workdone_id'] => ['technician_id' => $tech_id]
+            // ]);
 
             return [
                 'type' => 'success',
@@ -139,10 +145,15 @@ class ServiceRequestController extends Controller
               $unit_details[$input['appliance_id'][$i]] = [
                   'brand_id' => $input['brand_id'][$i],
                   'unit_id' => $input['unit_id'][$i],
+                  'qty' => 1
               ];   
           }
 
           $service_request->appliances()->attach($unit_details);
+
+          if (isset($input['trouble_id'])) {
+            $service_request->troubles()->attach($input['trouble_id']);
+          }
 
           return response()->json([
             'type' => 'success',

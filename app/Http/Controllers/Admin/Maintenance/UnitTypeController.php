@@ -62,7 +62,7 @@ class UnitTypeController extends Controller
                 return [
                     'type' => 'success',
                     'title' => 'Success',
-                    'message' => "Unit Type information updated successfully",
+                    'message' => "Unit Type information added successfully",
                     'unitsS' => $unitsS
                 ];
             } catch (\Exception $e) {

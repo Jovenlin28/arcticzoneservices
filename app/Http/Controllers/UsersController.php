@@ -101,7 +101,7 @@ class UsersController extends Controller
         ])->validate();
 
         if (Auth::attempt(Input::only('email', 'password'))) {
-            return redirect('client/home');
+            return redirect('service-request');
         } else {
             return Redirect::back()->withErrors(['Invalid Username or Password']);
         }

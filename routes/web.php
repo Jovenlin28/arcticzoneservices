@@ -69,6 +69,7 @@ Route::prefix('admin')->namespace('Admin')
   Route::put('/services/complete_service_request', 'ServicesController@complete_service_request');
   Route::put('/technician_management/update_availability_status', 'TechMngController@update_availability_status');
   Route::post('/service_request/confirm_payment', 'ServicesController@confirm_payment');
+  Route::post('/service_request/decline_payment', 'ServicesController@decline_payment');
 });
 
 
@@ -90,6 +91,8 @@ Route::prefix('admin/maintenance')->namespace('Admin\Maintenance')
   Route::resource('/service_fees', 'ServiceFeesController');
   Route::resource('/appliance_type', 'ApplianceTypeController');
   Route::resource('/service_timeslots', 'TimeslotsController');
+  Route::resource('/horse_power', 'HorsePowerController');
+  Route::resource('/horse_power_fees', 'HorsePowerFeeController');
 
   // ...
 });

@@ -103,5 +103,4 @@
     <script src="{{ asset('assets/js/pages/dashboard-2.init.js')}}"></script>
     <script src="{{ asset('assets/js/app.min.js')}}"></script>
 </body>
-
 </html>
