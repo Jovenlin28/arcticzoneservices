@@ -19,11 +19,10 @@
 
 <div class="row">
   <div class="col-md-12">
-    @foreach ($service_requests_group as $service_type => $service_requests)
     <div class="card">
       <div class="card-body">
 
-        <h4 class="header-title">Service Requested ({{ ucfirst($service_type) }})</h4>
+        <h4 class="header-title">Service Requested</h4>
         <p class="text-muted font-13 mb-4">
           List of all service request.
         </p>
@@ -49,7 +48,7 @@
             <tr>
               <td>
                 <a href="{{ url('/admin/services/service_request_details/' . $service_request['id'])}}">
-                  {{ $service_request['id'] }}
+                  {{ date('Y') . '-' . '0000' . $service_request['id'] }}
                 </a>
               </td>
               <td>
@@ -125,7 +124,6 @@
 
       </div>
     </div>
-    @endforeach
     
   </div>
 </div>

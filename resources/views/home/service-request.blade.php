@@ -79,7 +79,7 @@
                 </div>
                 <p>*Serving around Metro Manila only.</p>
               </div>
-              <div class="step2 step">
+              {{-- <div class="step2 step">
                 <h6 class="mt-4">Step 2 of 6 : UNIT DETAILS</h6>
                 <h2 class="mt-1 m-0" style="color: #1988f1;">Which service do you need?</h2>
                 <br>
@@ -92,8 +92,8 @@
                   </label>
                 </div>
                 @endforeach
-              </div>
-              <div class="step3 step">
+              </div> --}}
+              <div class="step2 step">
                 <h6 class="mt-4">Step 2 of 6 : UNIT DETAILS</h6>
                 <h2 class="mt-1 m-0" style="color: #1988f1;">Provide your aircon details.</h2>
                 <p>To find out your aircon type and fees, <a href="" data-toggle="modal" data-target="AirconInfo">see
@@ -119,7 +119,7 @@
                   <br>
                 </div>
               </div>
-              <div class="step4 step">
+              <div class="step3 step">
                 <h6 class="mt-4">Step 3 of 6 : DATE AND TIME</h6>
                 <h2 class="mt-1 m-0" style="color: #1988f1;">When do you need the service?</h2>
                 <br>
@@ -135,23 +135,26 @@
                     <br>
                     @foreach ($timeslots as $timeslot)
 
-                    <button type="button" class="timeslot btn btn-md btn-block btn-primary">
+                    <button type="button" 
+                      {{ $timeslot->service_requests_count >= 2 ? 'disabled' : '' }}
+                      class="timeslot btn btn-md btn-block btn-primary">
                       <label for="timeslot-{{ $timeslot->id }}">
-                        <input type="radio" id="timeslot-{{ $timeslot->id }}" value="{{ $timeslot->id }}"
+                        <input type="radio" 
+                          {{ $timeslot->service_requests_count >= 2 ? 'disabled' : '' }}
+                          id="timeslot-{{ $timeslot->id }}"
+                          value="{{ $timeslot->id }}"
                           name="timeslot_id">
                         {{ date('h:i A', strtotime($timeslot->start)) . ' - ' . date('h:i A', strtotime($timeslot->end)) }}
                       </label>
-                      <small class="small">
-                        <br> 2 Technicians Left
-                      </small>
                     </button>
                     @endforeach
 
                   </div>
                 </div>
-                <p>*Technician arrives within the 1st-hour of a timeslot.</p>
+                <br>
+                <small>*We can only serve two (2) requests per timeslot. Our technician arrives within the 1st-hour of a timeslot.*</small>
               </div>
-              <div class="step5 step">
+              <div class="step4 step">
                 <h6 class="mt-4">Step 4 of 6 : CONTACT DETAILS</h6>
                 <h2 class="mt-1 m-0" style="color: #1988f1;">What are your contact details?</h2>
                 <p>Is the service for your home address?</p>
@@ -160,19 +163,14 @@
                 <div class="card-box">
                   <ul class="nav nav-pills navtab-bg">
                     <li class="nav-item">
-                      <a href="#yes"
-                        data-answer="yes"
-                        data-toggle="tab" 
-                        aria-expanded="true" 
+                      <a href="#yes" data-answer="yes" data-toggle="tab" aria-expanded="true"
                         class="nav-link active client_details">
                         <i class="mdi mdi-timeline mr-1"></i>YES
                       </a>
                     </li>
                     <li class="nav-item">
-                      <a href="#no" 
-                        data-answer="no"
-                        data-toggle="tab" 
-                        aria-expanded="false" class="nav-link client_details">
+                      <a href="#no" data-answer="no" data-toggle="tab" aria-expanded="false"
+                        class="nav-link client_details">
                         <i class="mdi mdi-settings-outline mr-1"></i>NO
                       </a>
                     </li>
@@ -246,20 +244,14 @@
                         <div class="col-md-6">
                           <div class="form-group">
                             <label>Contact First Name</label>
-                            <input type="text" 
-                              name="contact_firstname"
-                              class="form-control" 
-                              id="contact_firstname"
+                            <input type="text" name="contact_firstname" class="form-control" id="contact_firstname"
                               placeholder="Enter contact firstname">
                           </div>
                         </div>
                         <div class="col-md-6">
                           <div class="form-group">
                             <label>Contact Last Name</label>
-                            <input type="text" 
-                              name="contact_lastname"
-                              class="form-control" 
-                              id="contact_lastname"
+                            <input type="text" name="contact_lastname" class="form-control" id="contact_lastname"
                               placeholder="Enter contact last name">
                           </div>
                         </div> <!-- end col -->
@@ -269,37 +261,29 @@
                         <div class="col-md-6">
                           <div class="form-group">
                             <label>Email Address</label>
-                            <input type="text"
-                            name="contact_email" 
-                            class="form-control" 
-                            id="contact_email" placeholder="">
+                            <input type="text" name="contact_email" class="form-control" id="contact_email"
+                              placeholder="">
                           </div>
                         </div>
                         <div class="col-md-6">
                           <div class="form-group">
                             <label>Mobile Number</label>
-                            <input type="text" 
-                            name="contact_mobile_number"
-                            class="form-control" 
-                            id="contact_mobile_number" placeholder="">
+                            <input type="text" name="contact_mobile_number" class="form-control"
+                              id="contact_mobile_number" placeholder="">
                           </div>
                         </div> <!-- end col -->
                       </div> <!-- end row -->
 
                       <div class="form-group">
                         <label>Service Address</label>
-                        <input type="text" 
-                        name="contact_address"
-                        class="form-control" 
-                        id="contact_address" placeholder="">
+                        <input type="text" name="contact_address" class="form-control" id="contact_address"
+                          placeholder="">
                       </div>
 
                       <div class="form-group">
                         <label>Near Landmark</label>
-                        <input type="text" 
-                        name="contact_near_landmark"
-                        class="form-control" 
-                        id="contact_near_landmark" placeholder="">
+                        <input type="text" name="contact_near_landmark" class="form-control" id="contact_near_landmark"
+                          placeholder="">
                       </div>
 
 
@@ -307,8 +291,7 @@
                         <div class="col-12">
                           <div class="form-group">
                             <label for="userbio">Additional Instructions</label>
-                            <textarea class="form-control" 
-                              name="contact_additional_instruction"
+                            <textarea class="form-control" name="contact_additional_instruction"
                               id="contact_additional_instruction" rows="4"
                               placeholder="Any special instructions to technician?"></textarea>
                             <small class="text-muted">150 characters</small>
@@ -326,7 +309,7 @@
 
 
               </div>
-              <div class="step6 step">
+              <div class="step5 step">
 
                 <h6 class="mt-4">Step 6 of 6 : PAYMENTS DETAILS</h6>
                 <h2 class="mt-1 m-0" style="color: #1988f1;">Choose your mode of payment.</h2>
@@ -342,7 +325,7 @@
                 </div>
                 @endforeach
                 <br>
-                <h6>Breakdown of Payments</h6>
+                <h6>Estimated Breakdown of Payments</h6>
                 <table class="table mb-0">
                   <thead>
                     <tr>
@@ -386,9 +369,6 @@
         <h4 class="mt-5">Request Summary</h4>
         <div class="card mt-3">
           <div class="container">
-            <p class="mt-4 m-0" style="color: #1988f1;">Appliance</p>
-            <small>AIRCON</small>
-
             <div class="row">
               <div class="col-md-6">
                 <p class="mt-3 m-0" style="color: #1988f1;">Service City</p>
@@ -399,9 +379,6 @@
                 <small id="summary_property_type"></small>
               </div>
             </div>
-
-            <p class="mt-4 m-0" style="color: #1988f1;">Service Type</p>
-            <small id="summary_service_type"></small>
 
             <br><br>
 
@@ -468,17 +445,17 @@
       //show back button
       $('#back_btn').attr('style', 'display: block');
 
-      if (activeStep === 3) {
-        filter_appliance_options();
-      }
+      // if (activeStep === 2) {
+      //   filter_appliance_options();
+      // }
 
-      if (activeStep === 5) {
+      if (activeStep === 4) {
         $('.copy').remove();
         displayUnitDetailsRow();
       }
 
       //show submit button if active step is 6 or the step you want to have the submit
-      if (activeStep == 6) {
+      if (activeStep == 5) {
           $('.copy').remove();
           $(this).attr('style', 'display: none');
           $('#submit_btn').attr('style', 'display: block');
@@ -503,8 +480,8 @@
               $('#back_btn').attr('style', 'display: none');
           }
           //hide submit button if active step is not on submit step form
-          if (activeStep < 6) {
-              if (activeStep === 5) {
+          if (activeStep < 5) {
+              if (activeStep === 4) {
                 displayUnitDetailsRow();
               }
               //show next button
@@ -537,13 +514,23 @@
   });
 
   $(document).on('click', 'button#submit_btn', function() {
-      const input = $('form#service-request').serializeArray();
-      const transformedInput = transformData(input);
-      const serviceDate = $('div#datepicker').datepicker('getDate');
-      transformedInput.service_date = $.datepicker.formatDate("MM dd, yy", serviceDate);
-      transformedInput.is_home_address = isHomeAddress;
-      console.log(transformedInput);
-      $.ajax({
+    Swal.fire({
+      title: 'Go to voucher page',
+      text: "Are you sure?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ok'
+    }).then((result) => {
+      if (result.value) {
+        const input = $('form#service-request').serializeArray();
+        const transformedInput = transformData(input);
+        const serviceDate = $('div#datepicker').datepicker('getDate');
+        transformedInput.service_date = $.datepicker.formatDate("MM dd, yy", serviceDate);
+        transformedInput.is_home_address = isHomeAddress;
+        console.log(transformedInput);
+        $.ajax({
           url: ' {{url("service-request/create")}} ',
           headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -563,18 +550,8 @@
                 res.title,
                 res.message,
                 res.type
-              ).then(() => {
-                Swal.fire({
-                  title: 'Go to voucher page',
-                  text: "Are you sure you want to redirect to voucher page",
-                  type: "primary",
-                  showCancelButton: true,
-                  confirmButtonColor: '#3085d6',
-                  cancelButtonColor: '#d33',
-                  confirmButtonText: 'Ok'
-                }).then((result) => {
-                  window.location = ' {{url("voucher")}} ';
-                });
+              ).then((result) => {
+                window.location = ' {{url("voucher")}} ';
               });
             }
           },
@@ -582,7 +559,9 @@
           error: function(err) {
               console.log(err);
           }
-      })
+        })
+      }
+    });
   });
 
   $(document).on('change', 'input[name="payment_mode_id"]', function(){
@@ -593,6 +572,11 @@
       totalPayment = totalPayment/2;
     }
     $('span#total-payment').text(totalPayment);
+  });
+
+  $(document).on('change', 'select[name="service_type_id"]', function(){
+    const $parent_container = $(this).parents('div.col-md-3');
+    filter_appliance_options($parent_container);
   });
 
   //show next step
@@ -607,22 +591,24 @@
       $('.' + step).fadeOut();
   }
 
-  function filter_appliance_options() {
-    const $checked_service_type = 'input[name="service_type_id"]:checked';
-    const service_type_id = +$($checked_service_type).val();
-    const service_type_name = $($checked_service_type).parent().text().trim();
+  function filter_appliance_options($parent_container) {
+    $parent_container.parent().next().show();
+    const $appliance_options = $parent_container.next().find('select[name="appliance_id"] option');
+    $appliance_options.show();
+    const $checked_service_type = 'select[name="service_type_id"] option:checked';
+    const service_type_id = +$parent_container.find($checked_service_type).val();
+    const service_type_name = $parent_container.find($checked_service_type).text().trim();
+
     if (service_type_name !== 'Repair') {
-      $('div#repair_problems_selection').remove();
+      $parent_container.parent().next().hide();
     }
     const appliance_ids = serviceFees.filter(s => {
       return s.service_id === service_type_id;
     }).map(service_fee => service_fee.appliance_id);
 
-
-    $('select[name="appliance_id"] option.non_default')
-      .filter(function( index, elem ) {
+    $appliance_options.filter(function( index, elem ) {
         return !appliance_ids.includes(+elem.value);
-      }).remove();
+      }).hide();
   }
 
   function initServiceFees() {
@@ -632,7 +618,7 @@
   }
 
   function transformData(input) {
-      const arrayData = ['appliance_id', 'brand_id', 'unit_id', 'trouble_id'];
+      const arrayData = ['appliance_id', 'brand_id', 'unit_id', 'trouble_id', 'service_type_id'];
       return input.reduce((acc, item) => {
           if (arrayData.includes(item.name)) {
               if (!acc[item.name]) {
@@ -657,7 +643,7 @@
     let unitDetails = '';
     totalPayment = 0;
 
-    const service_type_id = +$('input[name="service_type_id"]:checked').val();
+    const service_type_id = +$('select[name="service_type_id"] option:checked').val();
 
     $.each($appliances, function(index, elem) {
       let fee;
@@ -683,21 +669,18 @@
   }
 
   function displaySummary() {
-      const serviceType = $('input[name="service_type_id"]:checked').parent().text().trim();
       const timeslot = $('input[name="timeslot_id"]:checked').parent().text().trim();
       const location = $('select[name="location_id"] option:checked').text().trim();
       const propertyType = $('select[name="property_type_id"] option:checked').text().trim();
       const $appliances = $('select[name="appliance_id"] option:checked');
       const $units = $('select[name="unit_id"] option:checked');
       const $brands = $('select[name="brand_id"] option:checked');
-
-      
+      const $service_types = $('select[name="service_type_id"] option:checked');
 
       const serviceDate = $('div#datepicker').datepicker('getDate');
 
       $('#summary_service_date').text($.datepicker.formatDate("MM dd, yy", serviceDate));
       $('#summary_timeslot').text(timeslot);
-      $('#summary_service_type').text(serviceType);
       $('#summary_location').text(location);
       $('#summary_property_type').text(propertyType);
 
@@ -707,6 +690,10 @@
           unitDetails += `
           <div class="row">
             <div class="col-md-6">
+              <p class="mt-3 m-0" style="color: #1988f1;">Service Type</p>
+              <small>${$service_types[index].text.trim()}</small>
+            </div>
+            <div class="col-md-6">
               <p class="mt-3 m-0" style="color: #1988f1;">Appliance Type</p>
               <small>${elem.text.trim()}</small>
             </div>
@@ -714,10 +701,11 @@
               <p class="mt-3 m-0" style="color: #1988f1;">Unit Type</p>
               <small>${$units[index].text.trim()}</small>
             </div>
+            <div class="col-md-6">
+              <p class="mt-3 m-0" style="color: #1988f1;">Brand</p>
+              <small>${$brands[index].text.trim()}</small>
+            </div>
           </div>
-          <p class="mt-4 m-0" style="color: #1988f1;">Brand</p>
-          <small>${$brands[index].text.trim()}</small>
-          <br><br>
           <hr>
           `;
       });

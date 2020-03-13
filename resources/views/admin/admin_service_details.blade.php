@@ -48,7 +48,7 @@
             <br>
           </p>
         </div>
-        <h4 class="card-title mb-3">SRID{{ $service_request['id'] }} - {{ $service_request['service_type']['name'] }}
+        <h4 class="card-title mb-3">SRID{{ date('Y') . '-' . '0000' . $service_request['id'] }}
           <br> <small>Submitted date: {{ date('F d, Y g:i A', strtotime($service_request['created_at'])) }}</small></h4>
 
         <br>
@@ -58,7 +58,7 @@
         <div class="row mt-2">
           <div class="col-md-2">
             <h6 class="text-muted">Client ID</h6>
-            <p>CL{{ $service_request['client']['id']}}</p>
+            <p>CL{{ date('Y') . '-' . '0000' . $service_request['client']['id'] }}</p>
           </div>
           <div class="col-md-2">
             <h6 class="text-muted">Requested By</h6>
@@ -117,7 +117,7 @@
         <div class="row mt-2">
           <div class="col-md-3">
             <h6 class="text-muted">Service ID</h6>
-            <p>SR{{ $service_request['service_type']['id'] }}</p>
+            <p>SR{{ date('Y') . '-' . '0000' . $service_request['id'] }}</p>
           </div>
           <div class="col-md-3">
             <h6 class="text-muted">Status</h6>
@@ -137,23 +137,25 @@
 
         <div class="row mt-2">
           <div class="col-md-3">
-            <h6 class="text-muted">Service Type</h6>
-            <p>{{ $service_request['service_type']['name'] }}</p>
-          </div>
-          <div class="col-md-3">
             <h6 class="text-muted">Property Type</h6>
             <p>{{ $service_request['property']['name'] }}</p>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-9">
             @foreach ($service_request['appliances'] as $i => $appliance)
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-4">
+                @if ($i === 0)
+                <h6 class="text-muted">Service Type</h6>
+                @endif
+                <p> {{ $appliance['service_type']['name'] }}</p>
+              </div>
+              <div class="col-md-4">
                 @if ($i === 0)
                 <h6 class="text-muted">Appliance Type</h6>
                 @endif
                 <p>{{ $appliance['name'] }} ({{ $appliance['pivot']['qty'] }}) </p>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-4">
                 @if ($i === 0)
                 <h6 class="text-muted">Unit Type and Brand</h6>
                 @endif
@@ -203,7 +205,7 @@
                 <h6 class="text-muted">Assigned Technician ID</h6>
                 <p>
                   @foreach ($service_request['technicians'] as $technician)
-                  TECH{{ $technician['id'] }} <br>
+                  TECH{{ date('Y') . '-' . '0000' . $technician['id'] }} <br>
                   @endforeach
                 </p>
               </div>

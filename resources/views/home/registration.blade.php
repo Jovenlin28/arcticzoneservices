@@ -73,10 +73,14 @@
           placeholder="Re-type Password">
         <p class="text-danger"></p>
 
+        <small class="mb-0 text-muted">By clicking Sign Up, you agree to our Terms and Conditions.</small>
+
         <br><br>
 
         <button type="submit" class="btn button primary-button btn-block mr-4 text-uppercase">Sign Up</button>
 
+        
+        
         <br>
 
         <p>Already have an account? <a href="/client/auth/login">Sign In</a></p>

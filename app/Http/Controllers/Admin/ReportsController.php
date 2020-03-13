@@ -30,7 +30,6 @@ class ReportsController extends Controller
         },
         'service_requests.payment_mode',
         'service_requests.location',
-        'service_requests.service_type',
         'service_requests.property',
         'service_requests.payment_mode',
         'service_requests.appliances.service_fees',
@@ -40,7 +39,7 @@ class ReportsController extends Controller
       foreach($client['service_requests'][0]['appliances'] as $appliance) {
           $found = array_filter($appliance['service_fees'], function($service_fee) use($client, $appliance){
           return $service_fee['appliance_id'] === $appliance['id'] && 
-          $service_fee['service_id'] === $client['service_requests'][0]['service_type_id'];
+          $service_fee['service_id'] === $appliance['pivot']['service_type_id'];
         });
         if (count($found) > 0) {
           $client['total_amount'] += array_values($found)[0]['fee'];
@@ -64,7 +63,7 @@ class ReportsController extends Controller
 
       $technician = UserTechnician::with([
         'tech_info',
-        'service_requests.service_type',
+
         'service_requests.client',
         'service_requests.remarks',
       ])->whereBetween('created_at', [
@@ -86,7 +85,7 @@ class ReportsController extends Controller
       $date_to = $request->query('date_to');
 
       $service_requests = ServiceRequest::with([
-        'client', 'property', 'timeslot', 'service_type', 'technicians.tech_info'
+        'client', 'property', 'timeslot', 'technicians.tech_info'
       ])->
       whereBetween('created_at', [
         $date_from, $date_to
@@ -143,7 +142,7 @@ class ReportsController extends Controller
         foreach($sr['appliances'] as $appliance) {
            $found = array_filter($appliance['service_fees'], function($service_fee) use($sr, $appliance){
             return $service_fee['appliance_id'] === $appliance['id'] && 
-            $service_fee['service_id'] === $sr['service_type_id'];
+            $service_fee['service_id'] === $appliance['pivot']['service_type_id'];
           });
           if (count($found) > 0) {
             $sr['total_amount'] += array_values($found)[0]['fee'];

@@ -77,4 +77,55 @@ class DashboardController extends Controller
         'tech_group_by'
       ]));
     }
+
+    public function TechAvailabilityStatistic() {
+      $technicians = UserTechnician::all()->toArray();
+      $tech_group_by = [
+        'available' => 0,
+        'unavailable' => 0
+      ];
+
+      foreach($technicians as $tech) {
+        if ($tech['availability_status'] === 1) {
+          $tech_group_by['available'] += 1;
+        } else {
+          $tech_group_by['unavailable'] += 1;
+        }
+      }
+
+      return $tech_group_by;
+    }
+
+    public function ServiceRequestStatusStatistic() {
+      $service_requests = ServiceRequest::whereBetween(
+        'created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]
+      )->get()->toArray();
+
+      $status_group = [
+        'new' => 0,
+        'assigned' => 0,
+        'closed' => 0,
+        'cancelled' => 0,
+        'on_going' => 0,
+      ];
+
+      foreach($service_requests as &$sr) {
+        if ($sr['status'] === 'new') {
+          $status_group['new'] += 1;
+        } else if ($sr['status'] === 'pending') {
+          if (Carbon::now()->gte(Carbon::parse($sr['service_date']))) {
+            $status_group['on_going'] += 1;
+          } else {
+            $status_group['assigned'] += 1;
+          }
+          
+        } else if ($sr['status'] === 'completed') {
+          $status_group['closed'] += 1;
+        } else {
+          $status_group['cancelled'] += 1;
+        }
+      }
+
+      return $status_group;
+    }
 }

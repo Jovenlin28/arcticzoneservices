@@ -376,6 +376,8 @@
   <script src="{{ asset ('assets/libs/peity/jquery.peity.min.js') }}"></script>
   <script src="{{ asset ('assets/libs/apexcharts/apexcharts.min.js') }}"></script> --}}
 
+  <script src="{{ asset ('assets/libs/chart-js/Chart.bundle.min.js') }}"></script> --}}
+
   <script src="{{ asset ('assets/libs/datatables/jquery.dataTables.min.js') }}"></script>
   <script src="{{ asset ('assets/libs/datatables/dataTables.bootstrap4.js') }}"></script>
   <script src="{{ asset ('assets/libs/datatables/dataTables.responsive.min.js') }}"></script>

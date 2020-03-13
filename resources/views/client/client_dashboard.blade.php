@@ -103,7 +103,10 @@
                     <hr>
                     <div class="row">
                       <div class="col-md-6">
-                        SR{{ $request['id'] }}
+                        @php
+                          
+                        @endphp
+                        SR{{ date('Y') . '-' . '0000' . $request['id'] }}
                       </div>
                       <div class="col-md-6">
                         {{ $request['service_date'] }}
@@ -137,7 +140,7 @@
                     <div class="row">
                       <div class="col-md-3">
                         <p class="text-muted">Service ID</p>
-                        <p>SR{{ $request['id'] }}</p>
+                        <p>SR{{ date('Y') . '-' . '0000' . $request['id'] }}</p>
                       </div>
                       <div class="col-md-3">
                         <p class="text-muted">Status</p>
@@ -161,28 +164,31 @@
 
                     <div class="row mt-3">
                       <div class="col-md-3">
-                        <p class="text-muted">Service Type</p>
-                        <p>{{ $request['service_type']['name'] }}</p>
-                      </div>
-                      <div class="col-md-3">
                         <p class="text-muted">Property Type</p>
                         <p>{{ $request['property']['name'] }}</p>
                       </div>
-                      <div class="col-md-6">
+                      <div class="col-md-9">
                         @foreach ($request['appliances'] as $i => $appliance)
                         <div class="row">
-                          <div class="col-md-6">
+                          <div class="col-md-4">
+                            @if ($i === 0)
+                            <p class="text-muted">Service Type</p>
+                            @endif
+                            <p>{{ $appliance['service_type']['name'] }}</p>
+                          </div>
+                          <div class="col-md-4">
                             @if ($i === 0)
                             <p class="text-muted">Appliance Type</p>
                             @endif
                             <p>{{ $appliance['name'] }} ({{ $appliance['pivot']['qty'] }}) </p>
                           </div>
-                          <div class="col-md-6">
+                          <div class="col-md-4">
                             @if ($i === 0)
                             <p class="text-muted">Unit Type and Brand</p>
                             @endif
                             <p>{{ $appliance['unit']['name'] }} / {{ $appliance['brand']['name'] }}</p>
                           </div>
+                          
                         </div>
                         @endforeach
 
@@ -257,14 +263,14 @@
                     </div>
                     @if ($category === 'pending')
                     <div class="mt-5">
-                      <button type="button" data-service-request-id="{{ $request['id'] }}" style="width: 49%;"
-                        class="reschedule-service-request btn btn-primary waves-effect waves-light" data-toggle="modal"
+                      <button type="button" data-service-request-id="{{ $request['id'] }}" 
+                        class="reschedule-service-request btn float-right btn-primary waves-effect waves-light" data-toggle="modal"
                         data-target="#myReschedule">Reschedule Request</button>
-                      <button type="button" 
+                      {{-- <button type="button" 
                         onclick="cancelServiceRequest( {{$request['id']}} )"
                         style="width: 50%;" 
                         class="btn btn-danger waves-effect waves-light">Cancel
-                        Request</button>
+                        Request</button> --}}
                     </div>
                     <br><br>
                     @endif

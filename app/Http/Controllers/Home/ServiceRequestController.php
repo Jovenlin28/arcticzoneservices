@@ -31,12 +31,13 @@ class ServiceRequestController extends Controller
         $brands = Brand::all();
         $units = UnitType::all();
         $appliances = Appliance::all();
-        $timeslots = ServiceTimeslot::all();
+        $timeslots = ServiceTimeslot::withCount('service_requests')->get();
         $payment_modes = PaymentMode::all();
         $troubles = RepairIssue::all();
 
         // echo "<pre>";
-        // print_r($service_types->service_fees->toArray());
+        // print_r($timeslots);
+        // die();
         
         return view('home.service-request')->with([
             'locations' => $locations,
@@ -116,7 +117,6 @@ class ServiceRequestController extends Controller
         try {
           $service_request = ServiceRequest::create([
             'client_id' => $input['client_id'],
-            'service_type_id' =>  $input['service_type_id'],
             'location_id' => $input['location_id'],
             'property_id' => $input['property_type_id'],
             'timeslot_id' => $input['timeslot_id'],
@@ -145,15 +145,19 @@ class ServiceRequestController extends Controller
               $unit_details[$input['appliance_id'][$i]] = [
                   'brand_id' => $input['brand_id'][$i],
                   'unit_id' => $input['unit_id'][$i],
+                  'service_type_id' => $input['service_type_id'][$i],
+                  'trouble_id' => $input['trouble_id'][$i] === '' ? null : $input['trouble_id'][$i],
                   'qty' => 1
               ];   
           }
 
           $service_request->appliances()->attach($unit_details);
 
-          if (isset($input['trouble_id'])) {
-            $service_request->troubles()->attach($input['trouble_id']);
-          }
+          session([
+            'voucher' => [
+              'service_request_id' => $service_request->id
+            ]
+          ]);
 
           return response()->json([
             'type' => 'success',

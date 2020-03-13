@@ -4,11 +4,11 @@
 @section('content')
 
 
-{{-- <div id="preloader">
+<div id="preloader">
   <div id="status">
     <div class="spinner">Loading...</div>
   </div>
-</div> --}}
+</div>
 
 
 <div class="row">
@@ -222,6 +222,27 @@
   </div>
 </div>
 
+<br><br>
+<h4><b>This Week</b></h4>
+<br>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <canvas id="service_request_status_chart" width="100%" height="100%"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <canvas id="tech_availability_chart" width="100%" height="100%"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 </div>
 </div>
@@ -234,8 +255,127 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
-    
+    setServiceRequestStatusChart();
+    setTechnicianAvailabilityChart();
   });
+
+  function setTechnicianAvailabilityChart() {
+    $.ajax({
+      url: 'statistics/tech_availability',
+      method: 'GET',
+      dataType: 'JSON',
+      success: function(res) {
+        const ctx = document.getElementById('tech_availability_chart');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Not Available', 'Assigned', 'Not Assigned'],
+                datasets: [{
+                    label: 'Technician Avaiability',
+                    data: [
+                      res.unavailable,
+                      res.unavailable,
+                      res.available
+                    ],
+                    backgroundColor: [
+                      'green',
+                      'violet',
+                      'gray'
+                    ],
+                    borderColor: [
+                      'green',
+                      'violet',
+                      'gray'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            stepSize: 1
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            fontSize: 12
+                        }
+                    }]
+                }
+            }
+        });
+      },
+
+      error: function(err) {
+        console.log(err);
+      }
+    })
+    
+  }
+
+  function setServiceRequestStatusChart() {
+    $.ajax({
+      url: 'statistics/service_requests_status',
+      method: 'GET',
+      dataType: 'JSON',
+      success: function(res) {
+        const ctx = document.getElementById('service_request_status_chart');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Waiting for payment', 'Assigned', 'On-going', 'Completed', 'Cancelled'],
+                datasets: [{
+                    label: 'Service Request Status',
+                    data: [
+                      res.new,
+                      res.assigned,
+                      res.on_going,
+                      res.closed,
+                      res.cancelled
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            stepSize: 1
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            fontSize: 8
+                        }
+                    }]
+                }
+            }
+        });
+      },
+
+      error: function(err) {
+        console.log(err);
+      }
+    })
+    
+  }
 
   function show_billing(client_id, sr_id) {
     window.location = `/admin/generate_reports/client_billing_report?client_id=${client_id}&sr_id=${sr_id}`;

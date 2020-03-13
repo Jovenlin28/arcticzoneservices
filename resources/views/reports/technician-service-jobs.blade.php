@@ -72,7 +72,7 @@
       @foreach ($technician['service_requests'] as $sr)
       <tr class="tr-pp">
         <td>{{ $sr['id'] }}</td>
-        <td>{{ $sr['service_type']['name'] }}</td>
+        <td>{{ '-' }}</td>
         <td>{{ $sr['client']['firstname'] . ' ' . $sr['client']['lastname'] }}</td>
         <td>{{ date('F d, Y', strtotime($sr['service_date'])) }}</td>
         <td>

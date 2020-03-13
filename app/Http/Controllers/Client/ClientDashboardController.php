@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\ServiceRequest;
 use App\Models\ServiceTimeslot;
+use App\Models\ServiceType;
 use App\Models\UnitType;
 use App\Models\UserClient;
 use Carbon\Carbon;
@@ -42,6 +43,7 @@ class ClientDashboardController extends Controller
             foreach($service_request['appliances'] as &$appliance) {
                 $appliance['brand'] = Brand::find($appliance['pivot']['brand_id'])->toArray();
                 $appliance['unit'] = UnitType::find($appliance['pivot']['unit_id'])->toArray();
+                $appliance['service_type'] = ServiceType::find($appliance['pivot']['service_type_id'])->toArray();
             }
         }
 

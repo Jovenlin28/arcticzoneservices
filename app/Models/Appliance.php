@@ -20,6 +20,10 @@ class Appliance extends Model
         return $this->belongsTo(UnitType::class, 'unit_id');
     }
 
+    public function service_type() {
+      return $this->belongsTo(ServiceType::class, 'service_type_id');
+    }
+
     public function serviceRequests() {
         return $this->belongsToMany(ServiceRequest::class);
     }

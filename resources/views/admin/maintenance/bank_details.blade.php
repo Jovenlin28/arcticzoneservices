@@ -30,6 +30,7 @@
               <th>ID</th>
               <th>Account Name</th>
               <th>Account Number</th>
+              <th>Fee</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -40,6 +41,7 @@
               <td>{{$bank->id}}</td>
               <td>{{$bank->name}}</td>
               <td>{{$bank->number}}</td>
+              <td>{{ number_format($bank->fee, 2) }}</td>
               <td>
                 <button type="button" class="btn btn-success btn-sm" onclick="show_edit_modal({{$bank}})"><i
                     class="la la-pencil"></i></button>
@@ -74,6 +76,12 @@
               required>
             <p class="text-danger mt-1" id="account_number_error"></p>
           </div>
+          <div class="form-group">
+            <label>Fee<span class="text-danger">*</span></label>
+            <input type="text" name="fee" id="fee" placeholder="Enter account fee" class="form-control"
+              required>
+            <p class="text-danger mt-1" id="fee_error"></p>
+          </div>
 
           <button type="submit" class="btn btn-primary">Save</button>
         </form>
@@ -106,6 +114,12 @@
               <input type="text" class="form-control" name="account_number" id="account_number">
               <p class="text-danger" id="account_number_error"></p>
             </div>
+            <div class="form-group">
+              <label>Fee</label>
+              <input type="text" class="form-control" name="account_fee" id="account_fee" placeholder="Enter account fee" 
+                required>
+              <p class="text-danger mt-1" id="account_fee_error"></p>
+            </div>
           </div>
 
           <div class="modal-footer">
@@ -132,7 +146,7 @@
         // console.log(data);
     }
 
-    function updateRow(id, accountName, accountNumber) {
+    function updateRow(id, accountName, accountNumber, fee) {
         var table = $('#basic-datatable')[0];
 
         for (var i = 0; i < table.rows.length; i++) {
@@ -140,6 +154,7 @@
                 // children[1] = 'SERVICE NAME' column
                 table.rows[i].children[1].innerText = accountName;
                 table.rows[i].children[2].innerText = accountNumber;
+                table.rows[i].children[3].innerText = fee;
                 break;
             }
         }
@@ -206,8 +221,9 @@
                 processData: false,
                 success: function (data){
                     if(data.errors){
-                        (data.errors.account_name.account_number) ? display_errors(data.errors.account_name.account_number,'#account_name', '#account_number', '#account_name_error', '#account_number_error') : 
-                        eliminate_errors('#account_name', '#account_number', '#account_name_error', '#account_number_error');
+                        (data.errors.account_name.account_number) ? display_errors(data.errors.account_name.account_number,'#account_name', '#account_number', '#account_fee', 
+                        '#account_name_error', '#account_number_error', '#account_fee_error') : 
+                        eliminate_errors('#account_name', '#account_number', '#account_fee', '#account_name_error', '#account_number_error', '#account_fee_error');
                     }
                     else{
                         $('#editModal').modal('hide');
@@ -218,7 +234,7 @@
                         ) // sweetalert rep.
 
                         // change value nung row..?
-                        updateRow(id, $('#account_name').val(), $('#account_number').val())
+                        updateRow(id, $('#account_name').val(), $('#account_number').val(), $('#account_fee').val())
                     }
                 },
                 error: function(data){
@@ -230,11 +246,12 @@
     });
 
     function show_edit_modal(bank){
-        eliminate_errors('#account_name', '#account_number','#account_name_error', '#account_number_error');
+        eliminate_errors('#account_name', '#account_number','#account_name_error', '#account_number_error', '#account_fee', '#account_fee_error');
         document.getElementById('bank_form').reset();
         $('#id').val(bank.id);
         $('#account_name').val(bank.name);
         $('#account_number').val(bank.number);
+        $('#account_fee').val(bank.fee);
 
         $('#editModal').modal('show');
     }
@@ -257,11 +274,11 @@
                     // validation message
                     if (data.errors) {
                         if (data.errors.name.number) {
-                            display_errors(data.errors.name.number,'#name', '#number','#account_name_error', '#account_number_error');
+                            display_errors(data.errors.name.number,'#name', '#number', '#fee', '#account_name_error', '#account_number_error', '#fee_error');
                            
                         } 
                         else {
-                            eliminate_errors('#name', '#number', '#account_name_error', '#account_number_error');
+                            eliminate_errors('#name', '#number', '#fee', '#account_name_error', '#account_number_error', '#fee_error');
                            
                         }
 

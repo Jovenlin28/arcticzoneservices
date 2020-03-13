@@ -33,7 +33,7 @@
 					<tbody>
 						@foreach ($completed_services as $service)
 							<tr>
-								<td>SR{{ $service['id'] }}</td>
+								<td>SR{{ date('Y') . '-' . '0000' . $service['id'] }}</td>
 								<td>CL{{ $service['client']['id'] }}</td>
 								<td>{{ $service['service_type']['name'] }}</td>
 								<td>{{ date('F d, Y', strtotime($service['service_date'])) }}</td>
@@ -64,6 +64,10 @@
 
 <script type="text/javascript">
   function showDetails(service, techId) {
+    const remark = service['remarks'].
+    filter(remark => {
+      return remark.technician_id == techId;
+    })[0];
     const template = `
       <div class="modal-dialog">
         <div class="modal-content">
@@ -74,11 +78,11 @@
           <div class="modal-body">
 
                   <div class="row">
-                    <div class="col-md-3">
-                      Date of Service: <br>
-                      Completed Date: <br>
+                    <div class="col-md-9">
+                      Date of Service:  ${service['service_date']} <br>
+                      Completed Date: ${service['completed_at']} <br>
                       Re-scheduled Date: <br>
-                      Timeslot:
+                      Timeslot: ${service['timeslot']['start'] + ' - ' + service['timeslot']['end']}
                     </div>
                     <div class="col-md-3">
                  
@@ -125,12 +129,7 @@
                 <br>
 
                 <p class=" text-info"><b>Remarks:</b></p>
-                  ${service['remarks'].filter(remark => {
-                    return remark.technician_id == techId;
-                  })[0].name
-                  }
-						   
-                
+                  ${remark ? remark.name : ''}
               </div>
             </div>
           </div>

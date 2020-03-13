@@ -48,7 +48,8 @@ class BankDetailsController extends Controller
   {
     $validator = Validator::make($request->all(), [
       'name' => 'required|string|unique:bank_details,name,',
-      'number' => 'required|string:bank_details,number'
+      'number' => 'required|string:bank_details,number',
+      'fee' => 'required|numeric'
     ]);
 
     if ($validator->fails()) {
@@ -59,7 +60,8 @@ class BankDetailsController extends Controller
 
         $bank = BankDetails::create([
           'name' => $request['name'],
-          'number' => $request['number']
+          'number' => $request['number'],
+          'fee' => $request['fee']
         ]);
 
 
@@ -111,7 +113,8 @@ class BankDetailsController extends Controller
   {
     $validator = Validator::make($request->all(), [
       'account_name' => 'required|string|unique:bank_details,name,' . $id . ',id',
-      'account_number' => 'required|string:bank_details,number,' . $id . ',id'
+      'account_number' => 'required|string:bank_details,number,' . $id . ',id',
+      'fee' => 'required|numeric'
     ]);
 
     if ($validator->fails()) {
@@ -120,7 +123,8 @@ class BankDetailsController extends Controller
       try {
         BankDetails::find($id)->update([
           'name' => $request['account_name'],
-          'number' => $request['account_number']
+          'number' => $request['account_number'],
+          'fee' => $request['fee']
         ]);
 
         return ['type' => 'success', 'title' => 'Success message', 'message' => "Bank account information updated successfully"];

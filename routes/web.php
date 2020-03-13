@@ -52,6 +52,9 @@ Route::prefix('admin')->namespace('Admin')
 ->middleware('auth:admin')
 ->group(function () {
   Route::get('/dashboard', 'DashboardController@index');
+  
+  Route::get('/statistics/service_requests_status', 'DashboardController@ServiceRequestStatusStatistic');
+  Route::get('/statistics/tech_availability', 'DashboardController@TechAvailabilityStatistic');
   Route::get('/back_up_and_restore', 'BackUpController@index');
   Route::get('/generate_reports', 'ReportsController@index');
   Route::get('/generate_reports/service_requests_report', 'ReportsController@generate_service_requests_report');

@@ -32,7 +32,7 @@ class ReportsController extends Controller
     foreach($client['service_requests'][0]['appliances'] as $appliance) {
         $found = array_filter($appliance['service_fees'], function($service_fee) use($client, $appliance){
         return $service_fee['appliance_id'] === $appliance['id'] && 
-        $service_fee['service_id'] === $client['service_requests'][0]['service_type_id'];
+        $service_fee['service_id'] === $appliance['pivot']['service_type_id'];
       });
       if (count($found) > 0) {
         $client['total_amount'] += array_values($found)[0]['fee'];

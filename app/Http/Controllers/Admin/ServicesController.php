@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\ServiceRequest;
+use App\Models\ServiceType;
 use App\Models\UnitType;
 use App\Models\UserTechnician;
 use Carbon\Carbon;
@@ -21,7 +22,8 @@ class ServicesController extends Controller
       $technicians = UserTechnician::where('availability_status', 1)->get()->toArray();
 
       $service_requests = ServiceRequest::with([
-        'client', 'property', 'technicians', 'timeslot', 'remarks', 'service_type', 'client_contact_person'
+        'client', 'property', 'technicians', 'timeslot', 'remarks', 
+        'client_contact_person'
       ])->get()->toArray();
 
 
@@ -31,25 +33,25 @@ class ServicesController extends Controller
         'installation' => []
       ];
 
-      foreach($service_requests as $sr) {
-        switch($sr['service_type']['name']) {
-          case 'Cleaning': 
-            array_push($sr_group_by_service_type['cleaning'], $sr);
-            break;
-          case 'Installation':
-            array_push($sr_group_by_service_type['installation'], $sr);
-            break;
-          default: 
-            array_push($sr_group_by_service_type['repair'], $sr);
-        } 
-      }
+      // foreach($service_requests as $sr) {
+      //   switch($sr['service_type']['name']) {
+      //     case 'Cleaning': 
+      //       array_push($sr_group_by_service_type['cleaning'], $sr);
+      //       break;
+      //     case 'Installation':
+      //       array_push($sr_group_by_service_type['installation'], $sr);
+      //       break;
+      //     default: 
+      //       array_push($sr_group_by_service_type['repair'], $sr);
+      //   } 
+      // }
 
       // echo "<pre>";
       // print_r($sr_group_by_service_type);
       // die();
 
       return view('admin.admin_service')->with([
-        'service_requests_group' => $sr_group_by_service_type,
+        'service_requests' => $service_requests,
         'technicians' => $technicians
       ]);
     }
@@ -57,7 +59,7 @@ class ServicesController extends Controller
     public function get_service_request($id) {
       $service_request = ServiceRequest::with([
         'client', 'client.user', 'property', 'technicians', 'timeslot', 'remarks',
-        'service_type', 'appliances.unit', 'appliances.brand', 'appliances.service_fees',
+        'appliances.unit', 'appliances.brand', 'appliances.service_fees',
         'workdone', 'location', 'payment_mode', 'client_contact_person'
       ])->find($id)->toArray();
       
@@ -65,6 +67,7 @@ class ServicesController extends Controller
       foreach($service_request['appliances'] as &$appliance) {
         $appliance['brand'] = Brand::find($appliance['pivot']['brand_id'])->toArray();
         $appliance['unit'] = UnitType::find($appliance['pivot']['unit_id'])->toArray();
+        $appliance['service_type'] = ServiceType::find($appliance['pivot']['service_type_id'])->toArray();
       }
 
       $this->set_service_request_total_amount($service_request);
@@ -162,7 +165,7 @@ class ServicesController extends Controller
       foreach($sr['appliances'] as $appliance) {
           $found = array_filter($appliance['service_fees'], function($service_fee) use($sr, $appliance){
           return $service_fee['appliance_id'] === $appliance['id'] && 
-          $service_fee['service_id'] === $sr['service_type_id'];
+          $service_fee['service_id'] === $appliance['pivot']['service_type_id'];
         });
         if (count($found) > 0) {
           $sr['total_amount'] += array_values($found)[0]['fee'];

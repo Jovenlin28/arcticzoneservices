@@ -12,4 +12,8 @@ class ServiceTimeslot extends Model
 
     protected $fillable = ['start', 'end'];
 
+    public function service_requests() {
+      return $this->hasMany(ServiceRequest::class, 'timeslot_id');
+    }
+
 }

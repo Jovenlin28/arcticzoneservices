@@ -28,7 +28,7 @@
 				</div>
 
 				<h5 class="card-title mb-0 text-white">
-					SR{{ $request['id'] }} - {{ $request['service_type']['name'] }}
+					SR{{ date('Y') . '-' . '0000' . $request['id'] }}
 				</h5>
 			</div>
 
@@ -53,7 +53,7 @@
 							<p class="mt-4"> <b> Appliances:</b> <br>
 								@foreach ($request['appliances'] as $appliance)
 								{{ $appliance['name'] }} ({{ $appliance['pivot']['qty'] }}) -
-                {{ $appliance['brand']['name'] . ' / ' . $appliance['unit']['name']}}
+                {{ $appliance['brand']['name'] . ' / ' . $appliance['unit']['name'] . ' / ' . $appliance['service_type']['name']}}
                 <br>
 								@endforeach
 							</p>

@@ -46,7 +46,7 @@ class UsersController extends Controller
       ])->validate();
 
       if (Auth::guard('admin')->attempt(Input::only('username', 'password'))) {
-          return redirect('admin/dashboard');
+          return redirect()->intended();
       } else {
           return Redirect::back()->withErrors(['Invalid Username or Password']);
       }
@@ -77,7 +77,7 @@ class UsersController extends Controller
       ])->validate();
 
       if (Auth::guard('technician')->attempt(Input::only('username', 'password'))) {
-          return redirect('tech/home');
+          return redirect()->intended();
       } else {
           return Redirect::back()->withErrors(['Invalid Username or Password']);
       }
@@ -101,7 +101,7 @@ class UsersController extends Controller
         ])->validate();
 
         if (Auth::attempt(Input::only('email', 'password'))) {
-            return redirect('service-request');
+            return redirect()->intended('service-request');
         } else {
             return Redirect::back()->withErrors(['Invalid Username or Password']);
         }

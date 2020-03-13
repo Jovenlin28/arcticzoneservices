@@ -10,7 +10,7 @@ class BankDetails extends Model
     // Table Name
     protected $table = 'bank_details';
 
-    protected $fillable = ['name', 'number'];
+    protected $fillable = ['name', 'number', 'fee'];
 
     public function get_bank_details($id)
     {

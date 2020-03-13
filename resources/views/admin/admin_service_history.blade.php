@@ -46,7 +46,7 @@
             <tr>
               <td>
                 <a href="{{ url('/admin/services/service_request_details/' . $sr['id'])}}">
-                  {{ $sr['id'] }}
+                  {{ date('Y') . '-' . '0000' . $sr['id'] }}
                 </a>
               </td>
               <td>

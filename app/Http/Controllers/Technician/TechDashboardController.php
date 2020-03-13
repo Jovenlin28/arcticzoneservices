@@ -17,9 +17,7 @@ class TechDashboardController extends Controller
     {
         $tech_id = Auth::guard('technician')->user()->id;
         $tech = UserTechnician::with([
-
             'service_requests.client',
-            'service_requests.service_type',
             'service_requests.property',
             'service_requests.location',
             'service_requests.timeslot',
@@ -33,6 +31,7 @@ class TechDashboardController extends Controller
             foreach($service_request['appliances'] as &$appliance) {
                 $appliance['brand'] = Brand::find($appliance['pivot']['brand_id'])->toArray();
                 $appliance['unit'] = UnitType::find($appliance['pivot']['unit_id'])->toArray();
+                $appliance['service_type'] = UnitType::find($appliance['pivot']['service_type_id'])->toArray();
             }
         }
 

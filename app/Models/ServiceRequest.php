@@ -12,7 +12,7 @@ class ServiceRequest extends Model
     protected $table = 'service_requests';
 
     protected $fillable = [
-        'client_id', 'service_type_id', 'location_id', 
+        'client_id', 'location_id', 
         'property_id', 'timeslot_id', 'client_contact_person_id', 
         'service_address', 'near_landmark', 'special_instruction', 'status',
         'service_date', 'payment_mode_id', 'is_paid'
@@ -24,7 +24,7 @@ class ServiceRequest extends Model
 
     public function appliances() {
       return $this->belongsToMany(Appliance::class, 'service_request_appliances')
-      ->withPivot('brand_id', 'unit_id', 'qty');
+      ->withPivot('brand_id', 'unit_id', 'qty', 'service_type_id', 'trouble_id');
     }
 
     public function troubles() {

@@ -67,6 +67,14 @@ button.action {
     padding: 5px;
 }
 
+div.repair_problems_selection {
+    display: none;
+}
+
+button.timeslot {
+    margin-top: 10px;
+}
+
 .message input[type=text] {
     width: 100%;
     padding: 12px 20px;
