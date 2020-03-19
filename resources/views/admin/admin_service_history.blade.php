@@ -61,8 +61,8 @@
                 {{ date('F d, Y g:i A', strtotime($sr['completed_at']))}} 
               </td>
               <td>
-                {{ $sr['technicians'][0]['username'] }} <br>
-                {{ $sr['technicians'][1]['username'] }}
+                {{ $sr['technicians'][0]['tech_info']['firstname'] . ' ' . $sr['technicians'][0]['tech_info']['lastname'] }} <br>
+                {{ $sr['technicians'][1]['tech_info']['firstname'] . ' ' . $sr['technicians'][1]['tech_info']['lastname'] }}
                 <br>
               </td>
               <td>

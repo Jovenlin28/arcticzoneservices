@@ -22,7 +22,7 @@ class ServicesController extends Controller
       $technicians = UserTechnician::where('availability_status', 1)->get()->toArray();
 
       $service_requests = ServiceRequest::with([
-        'client', 'property', 'technicians', 'timeslot', 'remarks', 
+        'client', 'property', 'technicians.tech_info', 'timeslot', 'remarks', 
         'client_contact_person'
       ])->get()->toArray();
 
@@ -58,7 +58,7 @@ class ServicesController extends Controller
 
     public function get_service_request($id) {
       $service_request = ServiceRequest::with([
-        'client', 'client.user', 'property', 'technicians', 'timeslot', 'remarks',
+        'client', 'client.user', 'property', 'technicians.tech_info', 'timeslot', 'remarks',
         'appliances.unit', 'appliances.brand', 'appliances.service_fees',
         'workdone', 'location', 'payment_mode', 'client_contact_person'
       ])->find($id)->toArray();
@@ -141,7 +141,23 @@ class ServicesController extends Controller
       $input = $request->all();
 
       try {
-        $service_request = ServiceRequest::findOrFail($input['service-request-id']);
+
+        $available_technicians = UserTechnician::where('availability_status', '=', 1)
+        ->skip(0)->take(2)->get()->toArray();
+
+        // echo "<pre>";
+        // print_r($available_technicians);
+        // die();
+
+        if (count($available_technicians) !== 2) {
+          return [
+            'type' => 'error', 
+            'title' => 'Error',
+            'message' => 'Two technician should be available'
+          ];
+        }
+        
+        $service_request = ServiceRequest::findOrFail($input['service_request_id']);
         $service_request->status = 'pending';
         $service_request->save();
 
@@ -154,6 +170,7 @@ class ServicesController extends Controller
             'type' => 'success',
             'title' => 'Success',
             'message' => "Successfully assigned technicians",
+            'technicians' => $available_technicians
         ];
       } catch(\Exception $e) {
           return ['type' => 'error', 'title' => 'Error','message' => $e->getMessage()];

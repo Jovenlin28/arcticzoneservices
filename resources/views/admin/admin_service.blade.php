@@ -64,7 +64,7 @@
                 {{ date('h:i A', strtotime($service_request['timeslot']['end'])) }}</td>
               <td>
                 @foreach ($service_request['technicians'] as $technician)
-                <small> {{ $technician['username'] }} </small> <br>
+                <small> {{ $technician['tech_info']['firstname'] . ' ' . $technician['tech_info']['lastname'] }} </small> <br>
                 @endforeach
               </td>
 
@@ -103,14 +103,14 @@
               </td>
               <td>
                 @if ($service_request['status'] === 'new' && $service_request['is_paid'])
-                  <button data-toggle="modal"
+                  <button
                     data-service-request-id="{{ $service_request['id'] }}"
-                    data-target="#assign-tech" 
                     class="btn btn-primary btn-xs action on-assign-tech">Assign</button>
                 @endif
 
                 @if ($service_request['status'] === 'pending' && \Carbon\Carbon::now()->gte(\Carbon\Carbon::parse($service_request['service_date'])))
-                  <button data-service-request-id="{{ $service_request['id'] }}"
+                  <button {{ count($service_request['remarks']) !== 2 ? 'disabled' : '' }} 
+                  data-service-request-id="{{ $service_request['id'] }}"
                     class="btn btn-warning btn-xs action complete-service-request">
                     Complete Request
                   </button>
@@ -215,8 +215,30 @@
       });
 
       $(document).on('click', 'button.on-assign-tech', function(){
-        const serviceRequestId = $(this).attr('data-service-request-id');
-        $('input[name="service-request-id"]').val(serviceRequestId);
+        const service_request_id = $(this).attr('data-service-request-id');
+        // $('input[name="service-request-id"]').val(serviceRequestId);
+        $.ajax({
+          url: ' {{url("admin/services/assign_technicians")}} ',
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          type: 'POST',
+          data: { service_request_id },
+          success: function(data) {
+            console.log(data);
+            if (data.type) {
+              if (data.type === 'error') {
+                Swal.fire(data.title, data.message, data.type);
+              } else {
+                // show modal
+              }
+            }
+          },
+
+          error: function(err) {
+            console.log(err);
+          }
+			  });
       });
 
       $(document).on('submit', 'form#assign-tech', function(e){

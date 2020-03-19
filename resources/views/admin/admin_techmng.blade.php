@@ -350,7 +350,9 @@ $(document).ready(function() {
               res.title,
               res.message,
               res.type
-            )
+            ).then(() => {
+              window.location.reload();
+            });
           }
         },
 
