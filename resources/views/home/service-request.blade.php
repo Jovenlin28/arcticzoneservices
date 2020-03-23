@@ -191,22 +191,22 @@
                             <input type="text" class="form-control" id="lastname" placeholder="">
                           </div>
                         </div> <!-- end col -->
-                      </div> <!-- end row -->
+                      </div> <!-- end row --> --}}
 
-                      <div class="row">
+                      <div id="company_details" class="row">
                         <div class="col-md-6">
                           <div class="form-group">
-                            <label>Email Address</label>
-                            <input type="text" class="form-control" id="email_address" placeholder="">
+                            <label>Company Name</label>
+                            <input type="text" name="company_name" class="form-control" id="company_name" placeholder="">
                           </div>
                         </div>
                         <div class="col-md-6">
                           <div class="form-group">
-                            <label>Mobile Number</label>
-                            <input type="text" class="form-control" id="mobile_no" placeholder="">
+                            <label>Company Branch</label>
+                            <input type="text" name="company_branch" class="form-control" id="company_branch" placeholder="">
                           </div>
                         </div> <!-- end col -->
-                      </div> <!-- end row --> --}}
+                      </div> <!-- end row -->
 
                       <div class="form-group">
                         <label>Service Address</label>
@@ -448,6 +448,14 @@
       // if (activeStep === 2) {
       //   filter_appliance_options();
       // }
+
+      if (activeStep === 3) {
+        $('#company_details').hide();
+        const propertyType = $('select[name="property_type_id"] option:checked').text().trim();
+        if (propertyType === 'Company') {
+          $('#company_details').show();
+        }
+      }
 
       if (activeStep === 4) {
         $('.copy').remove();

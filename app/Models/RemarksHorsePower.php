@@ -11,4 +11,12 @@ class RemarksHorsePower extends Model
   protected $table = 'remarks_horse_power';
 
   protected $fillable = ['horse_power_id', 'remarks_id', 'appliance_id'];
+
+  public function appliance() {
+    return $this->belongsTo(Appliance::class, 'appliance_id');
+  }
+
+  public function horse_power() {
+    return $this->belongsTo(HorsePower::class, 'horse_power_id');
+  }
 }

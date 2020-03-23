@@ -66,7 +66,7 @@
     <tbody>
       @foreach ($service_requests as $service_request)
         <tr class="tr-pp">
-          <td>{{ $service_request['id'] }}</td>
+          <td>{{ date('Y') . '-0000' . $service_request['id'] }}</td>
           <td>{{ date('F d y', strtotime($service_request['service_date'])) }}</td>
           <td>{{ $service_request['client']['firstname'] . ' ' . $service_request['client']['lastname'] }}</td>
           <td>{{ $service_request['service_address'] }}</td>

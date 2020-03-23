@@ -15,7 +15,7 @@ class ServiceRequest extends Model
         'client_id', 'location_id', 
         'property_id', 'timeslot_id', 'client_contact_person_id', 
         'service_address', 'near_landmark', 'special_instruction', 'status',
-        'service_date', 'payment_mode_id', 'is_paid'
+        'service_date', 'payment_mode_id', 'is_paid', 'company_name', 'company_branch'
     ];
 
     public function remarks() {

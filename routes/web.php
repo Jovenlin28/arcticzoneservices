@@ -60,6 +60,8 @@ Route::prefix('admin')->namespace('Admin')
   Route::get('/generate_reports/service_requests_report', 'ReportsController@generate_service_requests_report');
   Route::get('/generate_reports/service_requests_status_report', 'ReportsController@generate_service_requests_status_report');
   Route::get('/generate_reports/technician_service_jobs_report', 'ReportsController@generate_technician_service_jobs_report');
+  Route::get('/generate_reports/service_requests_by_type_report', 'ReportsController@generate_service_requests_by_type_report');
+  Route::get('/generate_reports/service_requests_payment_status_report', 'ReportsController@generate_service_requests_payment_status_report');
   Route::get('/generate_reports/client_billing_report', 'ReportsController@generate_client_billing_report');
   Route::get('/profile/my_account', 'UpdateAccountController@index');
   Route::get('/technician_management', 'TechMngController@index');

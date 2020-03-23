@@ -50,23 +50,22 @@
     </small></p>
   <hr>
 
+  <p>Service Request Status: <b> {{ $service_type }} </b> </p>
+
   <table>
     <thead>
       <tr class="tr-p">
         <td><b>SRID</b></td>
-        <td><b>Service</b></td>
         <td><b>Property</td>
         <td><b>Requested By</b></td>
         <td><b>Assigned By</b></td>
         <td><b>Date/Time</b></td>
-        <td><b>Status</b></td>
       </tr>
     </thead>
     <tbody>
       @foreach ($service_requests as $sr)
       <tr class="tr-pp">
         <td>{{ date('Y') . '-0000' . $sr['id'] }}</td>
-        <td>{{ '-' }}</td>
         <td>{{ $sr['property']['name'] }}</td>
         <td>{{ $sr['client']['firstname'] . ' ' . $sr['client']['lastname'] }}</td>
         <td>
@@ -79,22 +78,10 @@
           {{ date('g:iA', strtotime($sr['timeslot']['start'])) }} - 
           {{ date('g:iA', strtotime($sr['timeslot']['end'])) }}
         </td>
-        <td>
-          {{ ucfirst($sr['status']) }}
-        </td>
       </tr>
       @endforeach
       
     </tbody>
-
-    <h5>TOTAL OPEN REQUESTS: {{ $status_group['new'] }} </h5>
-    <h5>TOTAL PENDING REQUESTS: {{ $status_group['pending'] }} </h5>
-    <h5>TOTAL COMPLETED REQUESTS: {{ $status_group['completed'] }} </h5>
-    <h5>TOTAL ON GOING REQUESTS: {{ $status_group['on_going'] }}  </h5>
-    <h5>TOTAL CANCELLED REQUESTS: {{ $status_group['cancelled'] }} </h5>
-
-    <h5>TOTAL REQUESTS: {{ count($service_requests) }} </h5>
-
 
   </table>
 </body>

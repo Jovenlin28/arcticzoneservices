@@ -64,13 +64,13 @@
       <th>
         <br>
         {{ $client['firstname'] . ' ' . $client['lastname'] }} <br>
-        {{ $client['service_requests'][0]['service_address'] }} <br>
-        {{ $client['service_requests'][0]['property']['name'] }}
+        {{ $service_request['service_address'] }} <br>
+        {{ $service_request['property']['name'] }}
       </th>
       <th>
         <br>
         <b>Reference No.:</b> AZT-9012-9921 <br>
-        <b>Service ID: </b>SR{{ $client['service_requests'][0]['id'] }}<br>
+        <b>Service ID: </b>SR{{ $service_request['id'] }}<br>
         <b>Terms:</b> Cash
 
       </th>
@@ -90,26 +90,29 @@
     <tbody>
       <tr>
         <td align="center">2</td>
-        <td>Installation;
-          Window (2) Non-inverter / Samsung Inverter / Koppel</td>
-        <td align="right">{{ number_format($client['total_amount'], 2) }}</td>
-        <td align="right">{{ number_format($client['total_amount'], 2) }}</td>
+        <td>
+          {{-- Installation;
+          Window (2) Non-inverter / Samsung Inverter / Koppel --}}
+          @foreach ($service_request['additional_payment'] as $hp)
+            {{ $hp['appliance']['name'] . ',' . $hp['horse_power']['hp'] }}
+            <br>
+          @endforeach
+        </td>
+        <td align="right">{{ number_format($service_request['total_amount'], 2) }}</td>
+        <td align="right">{{ number_format($service_request['total_amount'], 2) }}</td>
       </tr>
     </tbody>
 
 
     <p align="right">
-      @if ($client['service_requests'][0]['payment_mode']['name']  !== 'Full Payment')
-        <b>Downpayment:</b> {{ number_format($client['total_amount'] / 2, 2) }} <br>
-      @endif
-      
-      <b>Grand Total Amount:</b> <u> {{ number_format($client['total_amount'], 2) }}</u>
+      <b>Downpayment:</b> {{ number_format($service_request['down_payment'], 2) }}  <br>
+      <b>Balance:</b> {{ number_format($service_request['balance'], 2) }}  <br>
+      <b>Grand Total Amount:</b> <u> {{ number_format($service_request['total_amount'], 2) }} </u>
     </p>
 
   </table>
 
   <br>
-  <p>Amount in words: <u><b> One Hundred Fifty Three Thousand Seven Hundred and 00/100 Pesos Only</p>
   <p>Please make check payable to: <b> Arctic Zone Thermosolutions Inc.</p>
   <br>
   <br>

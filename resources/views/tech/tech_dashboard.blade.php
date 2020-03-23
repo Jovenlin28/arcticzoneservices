@@ -52,9 +52,9 @@
             {{ $sr['client_contact_person']['address'] }} <br>
             {{ $sr['client_contact_person']['contact_number'] }}
             @endif <br>
-            {{ $sr['service_address'] }} <br>
+            {{-- {{ $sr['service_address'] }} <br>
             {{ $sr['location']['name'] }} ; Company <br>
-            {{ $sr['client']['contact_number'] }}
+            {{ $sr['client']['contact_number'] }} --}}
             <br>
             <br>
             <b>Service Date and Time</b>
@@ -130,7 +130,8 @@
           <p>
             @if ($sr['client_contact_person'] === null)
             <b> {{ $sr['client']['firstname'] . ' ' . $sr['client']['lastname'] }} </b> <br>
-            {{ $sr['location']['name'] }} ; Company <br>
+            {{ $sr['location']['name'] }} 
+            {{ isset($sr['company_name']) ? ';' . $sr['company_name'] : ''}} <br>
             {{ $sr['client']['address'] }} <br>
             {{ $sr['client']['contact_number'] }}
             @else
@@ -141,9 +142,9 @@
             {{ $sr['client_contact_person']['address'] }} <br>
             {{ $sr['client_contact_person']['contact_number'] }}
             @endif <br>
-            {{ $sr['service_address'] }} <br>
+            {{-- {{ $sr['service_address'] }} <br>
             {{ $sr['location']['name'] }} ; Company <br>
-            {{ $sr['client']['contact_number'] }}
+            {{ $sr['client']['contact_number'] }} --}}
             <br>
             <br>
             <b>Service Date and Time</b>

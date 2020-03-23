@@ -20,7 +20,9 @@
 <div class="row">
   <div class="col-md-8">
     <div class="card-box">
-      <h4 class="card-title mb-3">SRID0293 - Cleaning <br> <small>Submitted date: 2019-11-29 17:19:40</small></h4>
+      <h4 class="card-title mb-3">SRID{{ date('Y') . '-0000' . $service_request['id'] }} <br> 
+        <small>Submitted date: {{ date('F d, Y g:i A', strtotime($service_request['created_at'])) }}</small>
+      </h4>
 
       <ul class="nav nav-tabs">
         <li class="nav-item">
@@ -93,15 +95,15 @@
           <div class="row">
             <div class="col-md-3">
               <h6 class="text-muted">Company Name</h6>
-              <p>CL09192</p>
+              <p>{{ $service_request['company_name'] }}</p>
             </div>
             <div class="col-md-3">
               <h6 class="text-muted">Company Address</h6>
-              <p>Sofia Valerio</p>
+              <p>{{ $service_request['service_address'] }}</p>
             </div>
             <div class="col-md-3">
               <h6 class="text-muted">Company Branch</h6>
-              <p>09192640851</p>
+              <p>{{ $service_request['company_branch'] }}</p>
             </div>
           </div>
 
@@ -312,8 +314,13 @@
       </div>
       @endif
 
-      <button type="button" class="btn btn-primary btn-md float-right" data-toggle="modal" data-target="#modifyPayment">
-        See Payment</button>
+      <button type="button" 
+        onclick="show_additional_payment( {{ json_encode($service_request) }} )"
+        class="btn btn-primary btn-md float-right" 
+        data-toggle="modal" 
+        data-target="#modifyPayment">
+        See Payment
+      </button>
 
       <br>
       <br>
@@ -321,12 +328,6 @@
     </div>
   </div>
 </div>
-
-
-
-
-
-
 
 
 
@@ -383,30 +384,6 @@
       </div>
       <div class="modal-body">
 
-
-        <h4 class="header-title">Additional Payments</h4>
-        <p class="sub-header">
-          You may add new additional payments to include in client service request billing.
-        </p>
-
-        <div class="row">
-          <div class="col-md-6">
-            <div class="form-group">
-              <input type="text" class="form-control">
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="form-group">
-              <input type="text" class="form-control">
-            </div>
-          </div>
-          <div class="col-md-2">
-            <button class="btn btn-secondary btn-md" type="button">Add Fee/s</button>
-          </div>
-        </div>
-
-        <br>
-
         <h4 class="header-title">Breakdown of Payments</h4>
         <p class="sub-header">
           Shows the list of description of payments.
@@ -418,34 +395,29 @@
             <thead>
               <tr>
                 <th>Description</th>
-                <th># of Units</th>
                 <th>Total</th>
-
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <th>Window 2HP, 3HP Cleaning</th>
-                <td>2</td>
-                <td>100.00</td>
-              </tr>
-
-              <tr>
-                <th>Window 2HP, 3HP Cleaning</th>
-                <td>2</td>
-                <td>100.00</td>
-              </tr>
-
+            <tbody id="additional_payment">
             </tbody>
           </table>
         </div> <!-- end table-responsive-->
 
-        <h4 class="float-right"><b>Grand Total : PHP 200.00</b></h4>
 
+        <div class="text-right">  
+          <h5>Downpayment : 
+            <span id="down_payment"></span>.00
+          </h5>
+          <h5>Balance : 
+            <span id="balance"></span>.00
+          </h5>
+          <h4><b>Grand Total Amount: 
+            <span id="grand_total"></span>.00</b>
+          </h4>
+        </div>
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary waves-effect waves-light">Modify</button>
         <button type="button" class="btn btn-secondary waves-effect waves-light">Cancel</button>
       </div>
     </div>
@@ -531,6 +503,22 @@
       });
     });
   });
+
+  function show_additional_payment(service_request) {
+    let rowTemplate = '';
+    service_request.additional_payment.forEach(item => {
+      rowTemplate += `
+      <tr>
+        <td>${item.appliance.name + ',' + item.horse_power.hp}</td>
+        <td>${item.fee}.00</td>
+      </tr>
+      `
+    });
+    $('span#down_payment').text(service_request.down_payment);
+    $('span#balance').text(service_request.balance);
+    $('span#grand_total').text(service_request.total_amount);
+    $('tbody#additional_payment').html(rowTemplate);
+  }
 </script>
 
 @endpush

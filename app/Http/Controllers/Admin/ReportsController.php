@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ServiceRequest;
+use App\Models\ServiceType;
 use App\Models\UserClient;
 use App\Models\UserTechnician;
 use Carbon\Carbon;
@@ -17,7 +18,10 @@ class ReportsController extends Controller
     public function index() 
     {
       $technicians = UserTechnician::all();
-      return view('admin.admin_reports', compact('technicians'));
+      $service_types = ServiceType::all();
+      return view('admin.admin_reports', compact([
+        'technicians', 'service_types'
+      ]));
     }
 
     public function generate_client_billing_report(Request $request) {
@@ -76,6 +80,44 @@ class ReportsController extends Controller
 
       $pdf = PDF::loadView('reports.technician-service-jobs', compact([
         'technician', 'date_from', 'date_to'
+      ]));
+      return $pdf->stream();
+    }
+
+    public function generate_service_requests_by_type_report(Request $request) {
+      $date_from = $request->query('date_from');
+      $date_to = $request->query('date_to');
+      $service_type_id = $request->query('service_type_id');
+      $service_type = $request->query('service_type');
+
+      $service_requests = ServiceRequest::with([
+        'client', 'property', 'timeslot', 'technicians.tech_info'
+      ])->
+      whereBetween('created_at', [
+        $date_from, $date_to
+      ])->get()->toArray();
+
+      $pdf = PDF::loadView('reports.service-requests-by-type', compact([
+        'service_requests', 'date_from', 'date_to', 'service_type'
+      ]));
+      return $pdf->stream();
+    }
+
+    public function generate_service_requests_payment_status_report(Request $request) {
+      $date_from = $request->query('date_from');
+      $date_to = $request->query('date_to');
+      $is_paid = $request->query('is_paid');
+      $payment_status = ucfirst($request->query('payment_status'));
+
+      $service_requests = ServiceRequest::where('is_paid', $is_paid)->with([
+        'client', 'property', 'timeslot', 'technicians.tech_info'
+      ])->
+      whereBetween('created_at', [
+        $date_from, $date_to
+      ])->get()->toArray();
+
+      $pdf = PDF::loadView('reports.service-requests-payment-status', compact([
+        'service_requests', 'date_from', 'date_to', 'payment_status'
       ]));
       return $pdf->stream();
     }

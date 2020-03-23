@@ -32,7 +32,7 @@
             <tr>
               <th>SRID</th>
               <th>Requested By</th>
-            
+
               <th>Property</th>
               <th>Date and Time</th>
               <th>Assigned Tech/s</th>
@@ -52,10 +52,10 @@
                 </a>
               </td>
               <td>
-                @if ($service_request['client_contact_person'] === null) 
+                @if ($service_request['client_contact_person'] === null)
                 {{ $service_request['client']['firstname'] . ' ' . $service_request['client']['lastname'] }}
                 @else
-                {{ $service_request['client_contact_person']['firstname'] . ' ' . $service_request['client_contact_person']['lastname'] }} 
+                {{ $service_request['client_contact_person']['firstname'] . ' ' . $service_request['client_contact_person']['lastname'] }}
                 @endif
               </td>
               <td>{{ $service_request['property']['name'] }}</td>
@@ -64,7 +64,8 @@
                 {{ date('h:i A', strtotime($service_request['timeslot']['end'])) }}</td>
               <td>
                 @foreach ($service_request['technicians'] as $technician)
-                <small> {{ $technician['tech_info']['firstname'] . ' ' . $technician['tech_info']['lastname'] }} </small> <br>
+                <small> {{ $technician['tech_info']['firstname'] . ' ' . $technician['tech_info']['lastname'] }}
+                </small> <br>
                 @endforeach
               </td>
 
@@ -72,21 +73,21 @@
                 @if ($service_request['status'] === 'new')
                 <button type="button" class="btn btn-outline-secondary waves-effect waves-light">
                   @if (!$service_request['is_paid'])
-                    <span>Waiting for payment</span>
+                  <span>Waiting for payment</span>
                   @else
-                    <span>Waiting for assignment</span>
-                  @endif   
+                  <span>Waiting for assignment</span>
+                  @endif
                 </button>
                 @endif
 
                 @if ($service_request['status'] === 'pending')
-                  @if (\Carbon\Carbon::now()->gte(\Carbon\Carbon::parse($service_request['service_date'])))
-                  <button type="button" class="btn btn-outline-warning waves-effect waves-light">On-going Request</button>
-                  @else
-                  <button class="btn btn-outline-warning waves-effect waves-light">
-                    Pending Request
-                  </button>       
-                  @endif
+                @if (\Carbon\Carbon::now()->gte(\Carbon\Carbon::parse($service_request['service_date'])))
+                <button type="button" class="btn btn-outline-warning waves-effect waves-light">On-going Request</button>
+                @else
+                <button class="btn btn-outline-warning waves-effect waves-light">
+                  Pending Request
+                </button>
+                @endif
                 @endif
 
                 @if ($service_request['status'] === 'cancelled')
@@ -94,26 +95,27 @@
                 @endif
 
                 @if ($service_request['status'] === 'completed')
-                  {{-- @if (count($service_request['remarks']) === 2)
+                {{-- @if (count($service_request['remarks']) === 2)
                   <button type="button" class="btn btn-outline-success waves-effect waves-light">Completed Request</button>
                   @endif --}}
-                  <button type="button" class="btn btn-outline-success waves-effect waves-light">Completed Request</button>
+                <button type="button" class="btn btn-outline-success waves-effect waves-light">Completed
+                  Request</button>
                 @endif
-                
+
               </td>
               <td>
                 @if ($service_request['status'] === 'new' && $service_request['is_paid'])
-                  <button
-                    data-service-request-id="{{ $service_request['id'] }}"
-                    class="btn btn-primary btn-xs action on-assign-tech">Assign</button>
+                <button data-service-request-id="{{ $service_request['id'] }}"
+                  class="btn btn-primary btn-xs action on-assign-tech">Assign</button>
                 @endif
 
-                @if ($service_request['status'] === 'pending' && \Carbon\Carbon::now()->gte(\Carbon\Carbon::parse($service_request['service_date'])))
-                  <button {{ count($service_request['remarks']) !== 2 ? 'disabled' : '' }} 
+                @if ($service_request['status'] === 'pending' &&
+                \Carbon\Carbon::now()->gte(\Carbon\Carbon::parse($service_request['service_date'])))
+                <button {{ count($service_request['remarks']) !== 2 ? 'disabled' : '' }}
                   data-service-request-id="{{ $service_request['id'] }}"
-                    class="btn btn-warning btn-xs action complete-service-request">
-                    Complete Request
-                  </button>
+                  class="btn btn-warning btn-xs action complete-service-request">
+                  Complete Request
+                </button>
                 @endif
               </td>
             </tr>
@@ -124,68 +126,42 @@
 
       </div>
     </div>
-    
+
   </div>
 </div>
 
-<div id="assign-tech" 
-  class="modal fade" 
-  tabindex="-1" 
-  role="dialog" 
-  aria-labelledby="myModalLabel" 
-  aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <form id="assign-tech" class="">
-          <div class="modal-header">
-            <h4 class="modal-title" id="myModalLabel">Assign Technicians</h4>
-            <button type="button" 
-              class="close" 
-              data-dismiss="modal"
-              aria-hidden="true">×</button>
-          </div>
-          <div class="modal-body">
-            <input name="service-request-id" type="hidden" value="">
-            <div class="form-group">
-              <label for="select-technician-1">Select Technician 1</label>
-              <select name="technician-id-1" 
-                id="select-technician-1" 
-                class="form-control">
-                @foreach ($technicians as $technician)
-                <option value="{{ $technician['id'] }}">
-                  {{ $technician['username'] }}
-                </option>
-                @endforeach
-              </select>
-            </div>
-  
-            <div class="form-group">
-              <label for="select-technician-1">Select Technician 2</label>
-              <select name="technician-id-2" 
-                id="select-technician-2" 
-                class="form-control">
-                @foreach ($technicians as $technician)
-                <option value="{{ $technician['id'] }}">
-                  {{ $technician['username'] }}
-                </option>
-                @endforeach
-              </select>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" 
-              id="reschedule-service-request"
-              class="btn btn-primary waves-effect waves-light">Save</button>
-          </div>
-        </form>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
+<!-- Modal Content -->
+<div id="assignJob" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Assigned Technician
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      </div>
+      <div class="modal-body">
+        <h3>Assigned Technicians</h3>
+        <small>These are the technicians that have been assigned to 
+          <b>SRID0000<span id="service_request_id"></span></b>
+        </small>
+        <br><br>
+        <p id="first_tech" class="mb-0">TECHID0002 - Juan Dela Cruz</p>
+        <p id="second_tech">TECHID0003 - Jose Marcoz</p>
 
 
-  <script type="text/javascript">
-  
-    $(document).ready(function(){
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary waves-effect waves-light" data-dismiss="modal" aria-hidden="true">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- End of Modal Content -->
+
+
+<script type="text/javascript">
+  $(document).ready(function(){
 
       $(document).on('click', 'button.complete-service-request', function() {
         const service_request_id = $(this).attr('data-service-request-id');
@@ -214,9 +190,12 @@
 			  });
       });
 
+      $('#assignJob').on('hidden.bs.modal', function () {
+        window.location.reload();
+      });
+
       $(document).on('click', 'button.on-assign-tech', function(){
         const service_request_id = $(this).attr('data-service-request-id');
-        // $('input[name="service-request-id"]').val(serviceRequestId);
         $.ajax({
           url: ' {{url("admin/services/assign_technicians")}} ',
           headers: {
@@ -225,12 +204,22 @@
           type: 'POST',
           data: { service_request_id },
           success: function(data) {
-            console.log(data);
             if (data.type) {
               if (data.type === 'error') {
                 Swal.fire(data.title, data.message, data.type);
               } else {
-                // show modal
+                const first_tech_id = data.technicians[0].id;
+                const second_tech_id = data.technicians[1].id;
+                const first_tech_fullname = `${data.technicians[0].tech_info.firstname} ${data.technicians[0].tech_info.lastname}`;
+                const second_tech_fullname = `${data.technicians[1].tech_info.firstname} ${data.technicians[1].tech_info.lastname}`;
+                $('p#first_tech').html(
+                  `TECHID0000${first_tech_id} - ${first_tech_fullname}`
+                );
+                $('p#second_tech').html(
+                  `TECHID0000${second_tech_id} - ${second_tech_fullname}`
+                );
+                $('span#service_request_id').text(service_request_id);
+                $('#assignJob').modal('show');
               }
             }
           },
@@ -267,6 +256,6 @@
 			  });
       })
     });
-  </script>
+</script>
 
 @endsection

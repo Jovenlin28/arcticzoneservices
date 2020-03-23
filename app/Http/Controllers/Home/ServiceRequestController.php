@@ -135,7 +135,9 @@ class ServiceRequestController extends Controller
         'special_instruction' => $input['special_instruction'],
         'payment_mode_id' => $input['payment_mode_id'],
         'is_paid' => 0,
-        'service_date' => date('Y-m-d', strtotime($input['service_date']))
+        'service_date' => date('Y-m-d', strtotime($input['service_date'])),
+        'company_name' => isset($input['company_name']) ? $input['company_name'] : null,
+        'company_branch' => isset($input['company_branch']) ? $input['company_branch'] : null,
       ]);
 
       if ($input['is_home_address'] === 'false') {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Models\HorsePowerFee;
 use App\Models\ServiceRequest;
 use App\Models\ServiceType;
 use App\Models\UnitType;
@@ -26,30 +27,6 @@ class ServicesController extends Controller
         'client_contact_person'
       ])->get()->toArray();
 
-
-      $sr_group_by_service_type = [
-        'cleaning' => [],
-        'repair' => [],
-        'installation' => []
-      ];
-
-      // foreach($service_requests as $sr) {
-      //   switch($sr['service_type']['name']) {
-      //     case 'Cleaning': 
-      //       array_push($sr_group_by_service_type['cleaning'], $sr);
-      //       break;
-      //     case 'Installation':
-      //       array_push($sr_group_by_service_type['installation'], $sr);
-      //       break;
-      //     default: 
-      //       array_push($sr_group_by_service_type['repair'], $sr);
-      //   } 
-      // }
-
-      // echo "<pre>";
-      // print_r($sr_group_by_service_type);
-      // die();
-
       return view('admin.admin_service')->with([
         'service_requests' => $service_requests,
         'technicians' => $technicians
@@ -58,10 +35,13 @@ class ServicesController extends Controller
 
     public function get_service_request($id) {
       $service_request = ServiceRequest::with([
-        'client', 'client.user', 'property', 'technicians.tech_info', 'timeslot', 'remarks',
+        'client', 'client.user', 'property', 'technicians.tech_info', 'timeslot', 
+        'remarks.horse_power.appliance', 'remarks.horse_power.horse_power',
         'appliances.unit', 'appliances.brand', 'appliances.service_fees',
         'workdone', 'location', 'payment_mode', 'client_contact_person'
       ])->find($id)->toArray();
+
+      $horse_power_fees = HorsePowerFee::all();
       
 
       foreach($service_request['appliances'] as &$appliance) {
@@ -70,7 +50,30 @@ class ServicesController extends Controller
         $appliance['service_type'] = ServiceType::find($appliance['pivot']['service_type_id'])->toArray();
       }
 
-      $this->set_service_request_total_amount($service_request);
+      
+
+      $horse_power = [];
+
+      foreach($service_request['remarks'] as $remarks) {
+        $horse_power = array_merge($horse_power, $remarks['horse_power']);
+      }
+
+      $total_additional_payment = 0;
+
+      foreach($horse_power as &$hp) {
+        foreach($horse_power_fees as $hp_fees) {
+          if ($hp['horse_power_id'] === $hp_fees['hp_id']
+          && $hp['appliance_id'] === $hp_fees['appliance_id']) {
+            $hp['fee'] = $hp_fees['fee'];
+            $total_additional_payment += $hp['fee'];
+            break;
+          }
+        } 
+      }
+
+      $this->set_service_request_total_amount($service_request, $total_additional_payment);
+
+      $service_request['additional_payment'] = $horse_power;
 
       // echo "<pre>";
       // print_r($service_request);
@@ -142,7 +145,7 @@ class ServicesController extends Controller
 
       try {
 
-        $available_technicians = UserTechnician::where('availability_status', '=', 1)
+        $available_technicians = UserTechnician::with('tech_info')->where('availability_status', '=', 1)
         ->skip(0)->take(2)->get()->toArray();
 
         // echo "<pre>";
@@ -161,10 +164,10 @@ class ServicesController extends Controller
         $service_request->status = 'pending';
         $service_request->save();
 
-        $service_request->technicians()->attach([
-          $input['technician-id-1'],
-          $input['technician-id-2'],
-        ]);
+        // $service_request->technicians()->attach([
+        //   $input['technician-id-1'],
+        //   $input['technician-id-2'],
+        // ]);
 
         return [
             'type' => 'success',
@@ -177,7 +180,7 @@ class ServicesController extends Controller
       }
     }
 
-    private function set_service_request_total_amount(&$sr) {
+    private function set_service_request_total_amount(&$sr, $total_additional_payment) {
       $sr['total_amount'] = 0;
       foreach($sr['appliances'] as $appliance) {
           $found = array_filter($appliance['service_fees'], function($service_fee) use($sr, $appliance){
@@ -187,6 +190,15 @@ class ServicesController extends Controller
         if (count($found) > 0) {
           $sr['total_amount'] += array_values($found)[0]['fee'];
         } 
+      }
+      if ($sr['payment_mode']['name'] === 'Half Payment') {
+        $sr['down_payment'] = $sr['total_amount'] / 2;
+        $sr['balance'] = ($sr['total_amount'] / 2) + $total_additional_payment;
+        $sr['total_amount'] = $sr['total_amount'] + $total_additional_payment;
+      } else {
+        $sr['down_payment'] = $sr['total_amount'];
+        $sr['balance'] = $total_additional_payment;
+        $sr['total_amount'] = $sr['total_amount'] + $total_additional_payment;
       }
     }
 }
