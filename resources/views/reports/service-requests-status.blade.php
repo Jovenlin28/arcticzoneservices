@@ -66,7 +66,11 @@
       @foreach ($service_requests as $sr)
       <tr class="tr-pp">
         <td>{{ date('Y') . '-0000' . $sr['id'] }}</td>
-        <td>{{ '-' }}</td>
+        <td>
+          @foreach ($sr['appliances'] as $appliance)
+              {{ $appliance['service_type']['name'] . ' - ' . $appliance['name'] }} <br>
+          @endforeach
+        </td>
         <td>{{ $sr['property']['name'] }}</td>
         <td>{{ $sr['client']['firstname'] . ' ' . $sr['client']['lastname'] }}</td>
         <td>
@@ -75,7 +79,7 @@
               <br>
           @endforeach
         </td>
-        <td> {{ date('F d y', strtotime($sr['service_date'])) }} <br>
+        <td> {{ date('F d Y', strtotime($sr['service_date'])) }} <br>
           {{ date('g:iA', strtotime($sr['timeslot']['start'])) }} - 
           {{ date('g:iA', strtotime($sr['timeslot']['end'])) }}
         </td>

@@ -50,8 +50,6 @@ class ServicesController extends Controller
         $appliance['service_type'] = ServiceType::find($appliance['pivot']['service_type_id'])->toArray();
       }
 
-      
-
       $horse_power = [];
 
       foreach($service_request['remarks'] as $remarks) {

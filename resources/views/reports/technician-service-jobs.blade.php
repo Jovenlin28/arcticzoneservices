@@ -59,7 +59,7 @@
     <thead>
       <tr class="tr-p">
         <th><b>SRID</b></th>
-        <th><b>Service Type</b></th>
+        <th><b>Service</b></th>
         <th><b>Client Name</b></th>
         <th><b>Date Start</b></th>
         <th><b>Date Finish</b></th>
@@ -72,7 +72,11 @@
       @foreach ($technician['service_requests'] as $sr)
       <tr class="tr-pp">
         <td>{{ date('Y') . '-0000' . $sr['id'] }}</td>
-        <td>{{ '-' }}</td>
+        <td>
+          @foreach ($sr['appliances'] as $appliance)
+            {{ $appliance['service_type']['name'] . ' - ' . $appliance['name'] }} <br>
+          @endforeach
+        </td>
         <td>{{ $sr['client']['firstname'] . ' ' . $sr['client']['lastname'] }}</td>
         <td>{{ date('F d, Y', strtotime($sr['service_date'])) }}</td>
         <td>

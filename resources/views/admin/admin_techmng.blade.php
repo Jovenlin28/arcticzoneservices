@@ -49,7 +49,7 @@
           <tbody>
             @foreach ($technicians as $tech)
               <tr id="{{$tech['id']}}">
-                <td>TECH{{ $tech['id'] }}</td>
+                <td>TECH{{ date('Y') . '-0000' . $tech['id'] }}</td>
                 <td>{{ $tech['tech_info']['firstname'] . ' ' . $tech['tech_info']['lastname'] }}</td>
                 <td>{{ $tech['username'] }}</td>
                 <td>{{ $tech['tech_info']['contact_number'] }}</td>
@@ -65,6 +65,7 @@
                     data-target="#changeStatus"><i
                     class="fe-edit"></i></button>
                   <button class="btn btn-sm btn-warning" 
+                    onclick="show_tech_info( {{ json_encode($tech), url('/uploads' . '/' . $tech['profile_image']) }} )"
                     data-target="#infoTechnician" 
                     data-toggle="modal"><i
                     class="fe-eye"></i></button>
@@ -86,7 +87,7 @@
   aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form id="add-technician" role="form">
+      <form id="add-technician" role="form" enctype="multipart/form-data">
         <div class="modal-header">
           <h4 class="modal-title" id="myModalLabel">Add Technician</h4>
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -136,7 +137,7 @@
           </div>
           <div class="form-group">
             <label>Technician Image</label><br>
-            <input type="file" id="">
+            <input type="file" id="avatar" name="file" accept="image/png, image/jpeg">
           </div>
           <p class="text-muted mt-4">ACCOUNT DETAILS</p>
           <div class="form-group">
@@ -239,18 +240,28 @@
         <div class="row">
           <div class="col-md-6">
             <div class="text-center">
-              <img src="{{ asset('assets/images/users/user-7.jpg')}}">
+              <img 
+              width="150"
+              height="150"
+              id="tech_avatar" src="">
               <br>
               <small class="text-muted">Technician</small>
             </div>
           </div>
           <div class="col-md-6">
             <div class="">
-              <p class="m-0"><b>Technician ID:</b> <br> 0091 </p>
-              <p class="m-0"><b>Technician Name:</b> <br> Jose Riza</p>
-              <p class="m-0"><b>Home Address:</b> <br> 1720 Dahlia St. Purok 17 Brgy Commonwealth Quezon City</p>
-              <p class="m-0"><b>Contact Number:</b> <br> 09192640851</p>
-              <p class="m-0"><b>Email Address:</b> joserizal@gmail.com</p>
+              <p class="m-0"><b>Technician ID:</b> <br> 
+                <span id="tech_id"></span>
+              </p>
+              <p class="m-0"><b>Technician Name:</b> <br> 
+                <span id="tech_name"></span>
+              </p>
+              <p class="m-0"><b>Home Address:</b> <br> 
+                <span id="tech_address"></span>
+              </p>
+              <p class="m-0"><b>Contact Number:</b> <br> 
+                <span id="tech_contact_number"></span>
+              </p>
             </div>
           </div>
         </div>
@@ -311,7 +322,7 @@ $(document).ready(function() {
 
   $(document).on('submit', 'form#add-technician', function(evt) {
     evt.preventDefault();
-    addTechnician($(this).serialize());
+    addTechnician(this);
   });
 
   $('button.availability-status').on('click', function(){
@@ -327,41 +338,56 @@ $(document).ready(function() {
     }
     $('span#current-availability-status').text(currentStatus);
   });
-
-  function addTechnician(data) {
-    $('.is-invalid').removeClass('is-invalid');
-    $('p.text-danger').text('');
-    $.ajax({
-        url: ' {{ url("admin/tech_management/add_technician") }} ',
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        type: 'POST',
-        data: data,
-        success: function(res) {
-          if (res.errors) {
-            for (const key in res.errors) {
-              $(`[name=${key}]`).addClass('is-invalid');
-              $(`[name=${key}]`).next().text(res.errors[key][0]);
-            }
-          } else {
-            $('#Addtechnician').modal('hide');
-            Swal.fire(
-              res.title,
-              res.message,
-              res.type
-            ).then(() => {
-              window.location.reload();
-            });
-          }
-        },
-
-        error: function(err) {
-            console.log(err, 'error');
-        }
-    });
-  }
 });
+
+function show_tech_info(tech) {
+  const fullname = tech.tech_info.firstname + ' ' + tech.tech_info.lastname;
+  const avatar_url = ' {{ url("uploads") }} ' + '/' + tech.profile_image;
+  console.log(avatar_url);
+  $('span#tech_name').text(fullname);
+  $('span#tech_contact_number').text(tech.tech_info.contact_number);
+  $('span#tech_address').text(tech.tech_info.address);
+  $('span#tech_id').text(`TECH${new Date().getUTCFullYear()}-0000${tech.id}`);
+  $('img#tech_avatar').attr('src', avatar_url.replace(/ /g, ''));
+}
+
+function addTechnician(form) {
+  $('.is-invalid').removeClass('is-invalid');
+  $('p.text-danger').text('');
+  $.ajax({
+    url: ' {{ url("admin/tech_management/add_technician") }} ',
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    type: 'POST',
+    data: new FormData(form),
+    dataType:'JSON',
+    contentType: false,
+    cache: false,
+    processData: false,
+    success: function(res) {
+      if (res.errors) {
+        for (const key in res.errors) {
+          $(`[name=${key}]`).addClass('is-invalid');
+          $(`[name=${key}]`).next().text(res.errors[key][0]);
+        }
+      } else {
+        $('#Addtechnician').modal('hide');
+        Swal.fire(
+          res.title,
+          res.message,
+          res.type
+        ).then(() => {
+          window.location.reload();
+        });
+      }
+    },
+
+    error: function(err) {
+        console.log(err, 'error');
+    }
+  });
+}
 </script>
 
 <!-- End of Modal Content -->

@@ -13,7 +13,7 @@ class UserTechnician extends Authenticatable
     protected $table = 'users_tech';
 
     protected $fillable = [
-      'username', 'password', 'availability_status'
+      'username', 'password', 'availability_status', 'profile_image'
     ];
 
     protected $hidden = [

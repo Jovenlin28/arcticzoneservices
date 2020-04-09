@@ -253,7 +253,10 @@
                       <div class="col-md-3">
                         <p class="text-muted">Total Payment</p>
                         <p>
-                          <a onclick="show_client_billing({{ $client['id'] }}, {{ $request['id'] }})" href="#">See full details</a>
+                          <a  
+                          target="_blank"
+                          href="/client/generate_reports/client_billing_report?client_id={{$client['id']}}&sr_id={{ $request['id'] }}">
+                          See full details</a>
                         </p>
                       </div>
                       <div class="col-md-3">
@@ -381,7 +384,7 @@
 			showButtonPanel: true,
 			startDate: "now()" ,
 			daysOfWeekDisabled: '06',
-			dateFormat : 'MM dd, yy'
+			dateFormat : 'MM dd, yy',
     });
     
     $('a.receipt_payment').on('click', function(){
@@ -465,10 +468,6 @@
 			});
     })
   });
-
-  function show_client_billing(client_id, sr_id) {
-    window.location = `/client/generate_reports/client_billing_report?client_id=${client_id}&sr_id=${sr_id}`;
-  }
   
   function cancelServiceRequest(id) {
     Swal.fire({

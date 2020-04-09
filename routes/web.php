@@ -43,6 +43,8 @@ Route::prefix('tech')->namespace('Technician')
   Route::get('/home', 'TechDashboardController@index');
   Route::get('/account-settings', 'TechUpdateController@index');
   Route::get('/service-history', 'TechHistoryController@index');
+  Route::put('/update', 'TechUpdateController@update');
+  Route::post('/upload_photo', 'TechUpdateController@upload_photo');
 });
 
 /**

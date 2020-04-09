@@ -69,7 +69,8 @@
       </th>
       <th>
         <br>
-        <b>Reference No.:</b> AZT-9012-9921 <br>
+        <b>Reference No.:</b> 
+        {{ 'AZT-' . date('Y') . '-00' . $service_request['id'] }} <br>
         <b>Service ID: </b>SR{{ $service_request['id'] }}<br>
         <b>Terms:</b> Cash
 

@@ -71,6 +71,10 @@ div.repair_problems_selection {
     display: none;
 }
 
+.notification-list .notify-item .notify-details {
+  white-space: normal!important;
+}
+
 button.timeslot {
     margin-top: 10px;
 }

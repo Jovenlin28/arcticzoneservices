@@ -219,12 +219,14 @@
                 {{ date('F d, Y', strtotime($service_request['service_date'])) }}
               </p>
             </div>
+            @if ($service_request['status'] === 'completed')
             <div class="col-md-3">
               <h6 class="text-muted">Date and Time Completed</h6>
               <p>
                 {{ date('F d, Y h:i A', strtotime($service_request['completed_at'])) }}
               </p>
             </div>
+            @endif
           </div>
 
           <div class="row mt-2">
@@ -232,7 +234,7 @@
               <h6 class="text-muted">Additional HP Details</h6>
               <p>2019-11-29 17:19:40</p>
             </div>
-            @if ($service_request['status'] === 'complete')
+            @if ($service_request['status'] === 'completed')
             <h6 class="text-muted">Work Done</h6>
             <p>
               -
@@ -256,8 +258,10 @@
   <div class="col-md-4">
     <div class="card-box">
       <p class="text-muted">BILLING DETAILS
-        <a href="" class="float-right">See Invoice <i class="fe-download"></i></a>
-
+        <a 
+          href="/admin/generate_reports/client_billing_report?client_id={{$service_request['client']['id']}}&sr_id={{ $service_request['id'] }}"
+          target="_blank"
+          class="float-right">See Invoice <i class="fe-download"></i></a>
       </p>
 
 
@@ -266,7 +270,9 @@
       <div class="row mt-2">
         <div class="col-md-6">
           <h6 class="text-muted">Billing Invoice ID</h6>
-          <p>-</p>
+          <p>
+            {{ date('Y') . '-0000-00' . $service_request['id'] }}
+          </p>
         </div>
         <div class="col-md-6">
           <h6 class="text-muted">Status</h6>
@@ -298,10 +304,18 @@
       <div class="row mt-2">
         <div class="col-md-6">
           <h6 class="text-muted">Date and Time Receipt Accepted</h6>
-          <p>-</p>
+          <p>
+            {{ date('F d, Y h:i A', strtotime($service_request['validated_at'])) }}
+          </p>
         </div>
         <div class="col-md-6">
           <h6 class="text-muted">Proof of Payment</h6>
+          <p id="payment_submitted_date_hidden" class="d-none">
+            {{ date('F d, Y h:i A', strtotime($service_request['payment_submitted_date'])) }}
+          </p>
+          <p id="payment_reference_number_hidden" class="d-none">
+            {{ 'AZT-' . date('Y') . '-00' . $service_request['id'] }}
+          </p>
           <p>
             <button type="button" id="view_receipt" data-sr_id="{{ $service_request['id'] }}"
               data-is_paid="{{ $service_request['is_paid'] }}"
@@ -345,12 +359,12 @@
         </div>
         <div class="modal-body">
 
-          <p>Date and Time Submitted: <br>
-            -
+          <p><b>Date and Time Submitted:</b> <br>
+            <span id="payment_submitted_date"></span>
           </p>
 
-          <p>Receipt / Reference Number: <br>
-            -
+          <p><b>Receipt / Reference Number:</b> <br>
+            <span id="payment_reference_number"></span>
           </p>
           <br>
           <div>
@@ -418,7 +432,7 @@
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary waves-effect waves-light">Cancel</button>
+        <button data-dismiss="modal" type="button" class="btn btn-secondary waves-effect waves-light">Cancel</button>
       </div>
     </div>
   </div>
@@ -469,6 +483,10 @@
       if (is_paid) {
         $('#view_receipt_footer').hide();
       }
+      const submitted_date = $('p#payment_submitted_date_hidden').text();
+      const reference_number = $('p#payment_reference_number_hidden').text();
+      $('span#payment_submitted_date').text(submitted_date);
+      $('span#payment_reference_number').text(reference_number);
       $('img#payment_receipt').attr('src', payment_receipt_filepath);
     });
 

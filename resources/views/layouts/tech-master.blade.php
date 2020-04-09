@@ -23,6 +23,7 @@
   <link href="{{ asset('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
   <link href="{{ asset('assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />
   <link href="{{ asset('assets/css/app.min.css')}}" rel="stylesheet" type="text/css" />
+  <link href="{{ asset('home/css/style.css')}}" rel="stylesheet" type="text/css" />
 
   <script src="{{asset('home/js/jquery.3.4.1.js')}}"></script>
 
@@ -44,7 +45,12 @@
         <li class="dropdown notification-list">
           <a class="nav-link dropdown-toggle nav-user mr-0 waves-effect" data-toggle="dropdown" href="#" role="button"
             aria-haspopup="false" aria-expanded="false">
-            <img src="{{ asset('assets/images/default.png')}}" alt="user-image" class="rounded-circle">
+            <img src="{{ Auth::guard('technician')->user()->profile_image === null ? 
+              asset('assets/images/default.png') : 
+              url('/uploads' . '/' . Auth::guard('technician')->user()->profile_image) }}" 
+                id="photo-preview"
+                class="rounded-circle avatar-lg img-thumbnail"
+                alt="profile-image">
             <span class="pro-user-name ml-1">
               {{ Auth::guard('technician')->user()->username }} <i class="mdi mdi-chevron-down"></i>
             </span>

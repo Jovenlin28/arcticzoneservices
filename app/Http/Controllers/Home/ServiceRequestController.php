@@ -8,6 +8,7 @@ use App\Models\Appliance;
 use App\Models\Brand;
 use App\Models\ClientContactPerson;
 use App\Models\Location;
+use App\Models\Notification;
 use App\Models\PaymentMode;
 use App\Models\PropertyType;
 use App\Models\Remarks;
@@ -17,6 +18,7 @@ use App\Models\ServiceTimeslot;
 use App\Models\ServiceType;
 use App\Models\UnitType;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -55,12 +57,19 @@ class ServiceRequestController extends Controller
   public function reschedule_service_request(Request $request)
   {
     $input = $request->all();
+    $date = new DateTime(str_replace('(Philippine Standard Time)', '', $input['service_date']));
+    $formattedDate = $date->format('Y-m-d');
+    $fullname = Auth::user()->client->firstname . ' ' . Auth::user()->client->lastname;
 
     try {
       $service_request = ServiceRequest::findOrFail($input['service_request_id']);
       $service_request->timeslot_id = $input['timeslot_id'];
-      $service_request->service_date = date('Y-m-d', strtotime($input['service_date']));
+      $service_request->service_date = $formattedDate;
       $service_request->save();
+
+      Notification::create([
+        'data' => $fullname . ' has rescheduled SRID' . date('Y') . '-0000' . $input['service_request_id'],
+      ]);
 
       return [
         'type' => 'success',
@@ -76,6 +85,7 @@ class ServiceRequestController extends Controller
   {
     $input = $request->get('data');
     $tech_id = Auth::guard('technician')->user()->id;
+    $tech_fullname = Auth::guard('technician')->user()->username;
 
     try {
       $remarks = new Remarks([
@@ -95,6 +105,10 @@ class ServiceRequestController extends Controller
       }
 
       $remarks->horse_power()->createMany($remarks_horse_power);
+
+      Notification::create([
+        'data' => $tech_fullname . ' has made a remarks for SRID' . date('Y') . '-0000' . $input['service_request_id'],
+      ]);
 
       return [  
         'type' => 'success',

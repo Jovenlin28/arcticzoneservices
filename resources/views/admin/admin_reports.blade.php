@@ -191,7 +191,7 @@
         const status = $('select[name="payment_status"] > option:checked').text().trim();
         url += '&payment_status=' +  status + '&is_paid=' + is_paid;
       }
-      window.location = url;
+      window.open(url, '_blank');
     });
   });
 </script>

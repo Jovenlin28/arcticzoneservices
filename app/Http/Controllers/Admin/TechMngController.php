@@ -29,10 +29,15 @@ class TechMngController extends Controller
       }
 
       try {
+        $image = $request->file('file');
+        $new_name = time() . '.' . $image->getClientOriginalExtension();
+        $image->move(public_path('uploads'), $new_name);
+
         $tech = UserTechnician::create([
           'username' => $input['username'],
           'password' => Hash::make($input['password']),
-          'availability_status' => 1
+          'availability_status' => 1,
+          'profile_image' => $new_name
         ]);
 
         $tech->tech_info()->create([
@@ -81,6 +86,7 @@ class TechMngController extends Controller
         'firstname' => 'required|string',
         'lastname' => 'required|string',
         'address' => 'required|string',
+        'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
       ]);
     }
 }
