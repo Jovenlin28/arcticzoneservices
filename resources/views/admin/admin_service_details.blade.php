@@ -270,7 +270,7 @@
       <div class="row mt-2">
         <div class="col-md-6">
           <h6 class="text-muted">Billing Invoice ID</h6>
-          <p>
+          <p id="billing_id">
             {{ date('Y') . '-0000-00' . $service_request['id'] }}
           </p>
         </div>
@@ -392,7 +392,8 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel">Billing ID:
+        <h4 class="modal-title" id="myModalLabel">Billing ID: 
+          <span id="billing_id"></span>
         </h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
       </div>
@@ -523,6 +524,7 @@
   });
 
   function show_additional_payment(service_request) {
+    $('span#billing_id').text($('p#billing_id').text().trim());
     let rowTemplate = '';
     service_request.additional_payment.forEach(item => {
       rowTemplate += `

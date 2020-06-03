@@ -56,7 +56,7 @@
           <i class="glyphicon glyphicon-wrench"></i>
         </div>
         <div class="text-right">
-          <h2 class="mt-3 pt-1 mb-1"> {{ $status_group['assigned'] }} </h2>
+          <h2 class="mt-3 pt-1 mb-1"> {{ $count_group['requestors'] }} </h2>
           <p class="text-muted mb-0">Total Number</p>
         </div>
         <div class="clearfix"></div>

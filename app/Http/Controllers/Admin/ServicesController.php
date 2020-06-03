@@ -162,10 +162,10 @@ class ServicesController extends Controller
         $service_request->status = 'pending';
         $service_request->save();
 
-        // $service_request->technicians()->attach([
-        //   $input['technician-id-1'],
-        //   $input['technician-id-2'],
-        // ]);
+        $service_request->technicians()->attach([
+          $available_technicians[0]['id'],
+          $available_technicians[1]['id']
+        ]);
 
         return [
             'type' => 'success',

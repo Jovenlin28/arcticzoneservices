@@ -18,7 +18,12 @@ class DashboardController extends Controller
 
       $service_requests = ServiceRequest::all()->toArray();
       $technicians = UserTechnician::all()->toArray(); 
-      
+
+      $client_ids_key = [];
+      foreach($service_requests as $sr) {
+        $client_ids_key[$sr['client_id']] = 1;
+      }
+
       $count_group = [
         'properties' => DB::table('property_types')->count(),
         'locations' => DB::table('locations')->count(),
@@ -26,7 +31,8 @@ class DashboardController extends Controller
         'appliances' => DB::table('appliances')->count(),
         'units' => DB::table('units')->count(),
         'service_requests' => count($service_requests),
-        'technicians' => count($technicians)
+        'technicians' => count($technicians),
+        'requestors' => count(array_keys($client_ids_key))
       ];
 
       $tech_group_by = [

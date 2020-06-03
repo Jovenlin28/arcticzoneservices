@@ -8,6 +8,9 @@ use App\Models\HorsePowerFee;
 use App\Models\ServiceRequest;
 use App\Models\UserClient;
 use App\Models\UserTechnician;
+use App\Models\Brand;
+use app\Models\ServiceType;
+use App\Models\UnitType;
 use Carbon\Carbon;
 use PDF;
 
@@ -66,7 +69,10 @@ class ReportsController extends Controller
 
   private function set_service_request_total_amount(&$sr, $total_additional_payment) {
     $sr['total_amount'] = 0;
-    foreach($sr['appliances'] as $appliance) {
+    foreach($sr['appliances'] as &$appliance) {
+        $appliance['service_type'] = ServiceType::find($appliance['pivot']['service_type_id'])->toArray();
+        $appliance['brand'] = Brand::find($appliance['pivot']['brand_id'])->toArray();
+        $appliance['unit'] = UnitType::find($appliance['pivot']['unit_id'])->toArray();
         $found = array_filter($appliance['service_fees'], function($service_fee) use($sr, $appliance){
         return $service_fee['appliance_id'] === $appliance['id'] && 
         $service_fee['service_id'] === $appliance['pivot']['service_type_id'];

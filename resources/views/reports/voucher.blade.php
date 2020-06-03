@@ -100,7 +100,7 @@
 
   <p>
     This is your copy. Keep the part in the safe place. Bank service fee is applicable only when you pay via landbank.
-    This document is valid until <b> {{ date('F d, Y', strtotime($sr['service_date'] . '-1 day')) }}</b>.
+    This document is valid until <b> {{ date('F d, Y', strtotime($sr['service_date'])) }}</b>.
   </p>
 
 
@@ -162,7 +162,7 @@
           <small>THIS IS YOUR REFERENCE NUMBER.</small>
         </td>
         <td>
-          <b>{{ date('F d, Y', strtotime($sr['service_date'] . '-1 day')) }}</b><BR>
+          <b>{{ date('F d, Y', strtotime($sr['service_date'])) }}</b><BR>
           <small>THIS VOUCHER IS VALID UNTIL THIS DATE.</small>
         </td>
       </tr>

@@ -310,11 +310,11 @@
   <script src="{{ asset ('assets/js/vendor.min.js') }}"></script>
 
   <!-- Third Party js-->
-  {{-- <script src="{{ asset ('assets/libs/jquery-knob/jquery.knob.min.js') }}"></script>
+  <script src="{{ asset ('assets/libs/jquery-knob/jquery.knob.min.js') }}"></script>
   <script src="{{ asset ('assets/libs/peity/jquery.peity.min.js') }}"></script>
-  <script src="{{ asset ('assets/libs/apexcharts/apexcharts.min.js') }}"></script> --}}
+  <script src="{{ asset ('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
 
-  <script src="{{ asset ('assets/libs/chart-js/Chart.bundle.min.js') }}"></script> --}}
+  <script src="{{ asset ('assets/libs/chart-js/Chart.bundle.min.js') }}"></script>
 
   <script src="{{ asset ('assets/libs/datatables/jquery.dataTables.min.js') }}"></script>
   <script src="{{ asset ('assets/libs/datatables/dataTables.bootstrap4.js') }}"></script>
@@ -328,8 +328,8 @@
   <script src="{{ asset ('assets/libs/datatables/dataTables.keyTable.min.js') }}"></script>
   <script src="{{ asset ('assets/libs/datatables/dataTables.select.min.js') }}"></script>
 
-  {{-- <script src="{{ asset ('assets/libs/pdfmake/pdfmake.min.js') }}"></script>
-  <script src="{{ asset ('assets/libs/pdfmake/vfs_fonts.js') }}"></script> --}}
+  <script src="{{ asset ('assets/libs/pdfmake/pdfmake.min.js') }}"></script>
+  <script src="{{ asset ('assets/libs/pdfmake/vfs_fonts.js') }}"></script>
   <script src="{{ asset('assets/libs/moment/moment.min.js')}}"></script>
   <script src="{{ asset ('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js') }}"></script>
   <script src="{{ asset ('assets/libs/clockpicker/bootstrap-clockpicker.min.js') }}"></script>
@@ -358,9 +358,9 @@
   <script src="{{ asset ('assets/js/pages/sweet-alerts.init.js') }}"></script>
 
   <!-- Datatables init -->
-  {{-- <script src="{{ asset ('assets/js/pages/form-pickers.init.js') }}"></script> --}}
+  <script src="{{ asset ('assets/js/pages/form-pickers.init.js') }}"></script>
   <script src="{{ asset ('assets/js/pages/datatables.init.js') }}"></script>
-  {{-- <script src="{{ asset ('assets/js/pages/dashboard-2.init.js') }}"></script> --}}
+  <script src="{{ asset ('assets/js/pages/dashboard-2.init.js') }}"></script>
   <script src="{{ asset ('assets/libs/custombox/custombox.min.js') }}"></script>
 
   <!-- App js -->

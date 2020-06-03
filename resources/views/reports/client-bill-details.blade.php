@@ -71,7 +71,7 @@
         <br>
         <b>Reference No.:</b> 
         {{ 'AZT-' . date('Y') . '-00' . $service_request['id'] }} <br>
-        <b>Service ID: </b>SR{{ $service_request['id'] }}<br>
+        <b>Service ID: </b>SR{{ date('Y') . '-0000' . $service_request['id'] }}<br>
         <b>Terms:</b> Cash
 
       </th>
@@ -94,6 +94,12 @@
         <td>
           {{-- Installation;
           Window (2) Non-inverter / Samsung Inverter / Koppel --}}
+          @foreach ($service_request['appliances'] as $i => $appliance)
+          {{ $appliance['service_type']['name'] }} / 
+          {{ $appliance['name'] }} /
+          {{ $appliance['unit']['name'] }}
+          <br>
+          @endforeach
           @foreach ($service_request['additional_payment'] as $hp)
             {{ $hp['appliance']['name'] . ',' . $hp['horse_power']['hp'] }}
             <br>

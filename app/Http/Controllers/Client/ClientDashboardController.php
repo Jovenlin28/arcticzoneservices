@@ -91,6 +91,7 @@ class ClientDashboardController extends Controller
 
         $service_request = ServiceRequest::findOrFail($input['service_request_id']);
         $service_request->receipt_payment_file = $new_name;
+        $service_request->payment_submitted_date = Carbon::now();
         $service_request->save();
 
         return response()->json([

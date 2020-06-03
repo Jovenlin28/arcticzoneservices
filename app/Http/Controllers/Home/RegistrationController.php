@@ -64,6 +64,12 @@ class RegistrationController extends Controller
 
     private function send_email($email) {
 
+        $headers = "MIME-Version: 1.0" . "\r\n";
+        $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+
+        // More headers
+        $headers .= "From: sofiabalastavalerio@gmail.com" . "\r\n";
+
         $four_digit_random = rand(1000,9999); 
         // the message
         $msg = "Thanks for signing up. Here is your verification code: " . $four_digit_random;
@@ -72,7 +78,7 @@ class RegistrationController extends Controller
         $msg = wordwrap($msg,70);
 
         // send email
-        if (mail($email,"Sign up verification code",$msg)) {
+        if (mail($email,"Sign up verification code",$msg, $headers)) {
             session(
                 ['email-verification' => ['code' => $four_digit_random, 'email' => $email]]
             );

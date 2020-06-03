@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="{{ asset('home/vendor/owl-carousel/css/owl.theme.default.min.css')}}">
 
   <link rel="stylesheet" href="{{ asset('home/css/jquery-ui.css')}}">
-  {{-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> --}}
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <link rel="stylesheet" href="/resources/demos/style.css">
 
   <link href="{{ asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css')}}" rel="stylesheet"
